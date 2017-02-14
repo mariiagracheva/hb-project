@@ -78,11 +78,10 @@ def get_and_save_og(id):
     # ask why it's not working
     # here = os.path.dirname(os.path.realpath(__file__))
     # here = os.path.abspath(os.path.dirname(sys.argv[1]))
-    here = '/home/vagrant/src/project'
+    here = '/home/vagrant/src/hb-project'
     # =======================================================================
     # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!! CHANGE SUBDIR!!!!!!!!!!!!!!!!!!!!!!!!!!!
     # =======================================================================
-    here = '/home/vagrant/src/project'
     subdir = "org_json"
     try:
         os.makedirs(subdir)

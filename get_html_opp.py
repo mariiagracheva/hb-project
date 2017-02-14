@@ -93,7 +93,7 @@ def get_and_save_og(id):
     # =======================================================================
     # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!! CHANGE SUBDIR!!!!!!!!!!!!!!!!!!!!!!!!!!!
     # =======================================================================
-    here = '/home/vagrant/src/project'
+    here = '/home/vagrant/src/hb-project'
     subdir = 'opp_json'
     try:
         os.makedirs(subdir)

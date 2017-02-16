@@ -41,9 +41,9 @@ class Place(db.Model):
     
     # from API
     vm_id = db.Column(db.Integer, nullable=False, primary_key=True) # vm_id for easy access urls
-    name = db.Column(db.String(64), nullable=False)
-    place_type = db.Column(db.String(64), nullable=True)
-    img_url = db.Column(db.String(128), nullable=True)
+    name = db.Column(db.Text, nullable=False)
+    place_type = db.Column(db.Text, nullable=True)
+    img_url = db.Column(db.Text, nullable=True)
     descr = db.Column(db.Text, nullable=True)
 
     location_id = db.Column(db.Integer, db.ForeignKey('locations.location_id'), nullable=False)
@@ -54,7 +54,7 @@ class Place(db.Model):
 
     def __repr__(self):
         """Provide helpful represetration when printed"""
-        return "<Place vm_id=%s, %s>" % (self.vm_id, self.name)
+        return "<Place vm_id=%s, %s>" % (self.vm_id, self.name.encode('ascii', 'ignore'))
 
 
 class Opportunity(db.Model):

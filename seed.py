@@ -25,39 +25,39 @@ def load_places_and_locations():
 
     dir = 'org_json'
     listing = os.listdir(dir)
-    for infile in listing:
-        # extract organization's id
-        vm_id = int(infile.split('.')[0])
+    # for infile in listing:
+    #     # extract organization's id
+    #     vm_id = int(infile.split('.')[0])
         
-        data = json.loads(open(dir+'/'+infile).read())
+    #     data = json.loads(open(dir+'/'+infile).read())
         
-        # get location's data
-        lat = data['latitude']
-        lng = data['longitude']
-        try:
-            st_add1 = data['street-address']
-        except:
-            st_add1 = ''
-        try:
-            st_add2 = data['street-address2']
-        except:
-            st_add2 = ''
-        city = data['city']
-        zip_code = data['zip_code']
+    #     # get location's data
+    #     lat = data['latitude']
+    #     lng = data['longitude']
+    #     try:
+    #         st_add1 = data['street-address']
+    #     except:
+    #         st_add1 = ''
+    #     try:
+    #         st_add2 = data['street-address2']
+    #     except:
+    #         st_add2 = ''
+    #     city = data['city']
+    #     zip_code = data['zip_code']
 
-        loc = db.session.query(Location.location_id).filter(Location.lat == lat, Location.lng == lng).all()
+    #     loc = db.session.query(Location.location_id).filter(Location.lat == lat, Location.lng == lng).all()
 
-        if not loc:
-            location = Location(lat=lat,
-                            lng=lng,
-                            st_add1=st_add1,
-                            st_add2=st_add2,
-                            city=city,
-                            zip_code=zip_code,
-                            vm_id = vm_id)
-            print location
-            db.session.add(location)
-            db.session.commit()
+    #     if not loc:
+    #         location = Location(lat=lat,
+    #                         lng=lng,
+    #                         st_add1=st_add1,
+    #                         st_add2=st_add2,
+    #                         city=city,
+    #                         zip_code=zip_code,
+    #                         vm_id = vm_id)
+    #         print location
+    #         db.session.add(location)
+    #         db.session.commit()
             # loc = db.session.query(Location.location_id).filter(Location.lat == lat, Location.lng == lng).all()
 
     for line in open('organizations.json'):

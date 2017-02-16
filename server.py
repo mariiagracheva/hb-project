@@ -4,7 +4,7 @@ from flask import Flask, jsonify, render_template, redirect, request, flash, ses
 from flask_debugtoolbar import DebugToolbarExtension
 from sqlalchemy.orm.exc import NoResultFound, MultipleResultsFound
 
-from model import connect_to_db, db
+from model import connect_to_db, db, Place, Location, Opportunity, Category, PlaceCategory, OpportunityCategory
 
 
 app = Flask(__name__)
@@ -24,6 +24,9 @@ def index():
     # a = jsonify([1,3])
     return render_template("homepage.html")
 
+@app.route('/my-location')
+def my_location():
+    return render_template("my_location.html")
 
 # @app.route("/users")
 # def user_list():
@@ -115,31 +118,55 @@ def index():
 
 
 
-# @app.route("/movies")
-# def movies_list():
-#     """Show all movies"""
+@app.route("/places")
+def places_list():
+    """Show all movies"""
 
-#     movies = Movie.query.order_by(Movie.title).all()
-#     print movies
-#     return render_template("movie_list.html", movies=movies)
+    places = Place.query.order_by(Place.name).all()
+    print places
+    return render_template("place_list.html", places=places)
 
-# @app.route("/movies/<movie_id>")
-# def show_movie(movie_id):
-#     """Return page showing the details of movies."""
+@app.route("/places/<vm_id>")
+def show_place(vm_id):
+    """Return page showing the details of movies."""
 
-#     print movie_id
-#     movie = Movie.query.get(movie_id)
-#     print movie
-#     print movie.movie_id
-#     print movie.title
-#     print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
-#     movie_rating = db.session.query(Rating.score, User.email).join(User).filter(Rating.movie_id == movie_id).all()
-#     print movie_rating
-#     print len(movie_rating)
-#     return render_template("movie_details.html",
-#                            display_movie=movie,
-#                            display_movie_rating=movie_rating)
+    print vm_id
+    place = Place.query.get(vm_id)
+    print place
+    print place.vm_id
+    print place.name
+    # print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
+    # movie_rating = db.session.query(Rating.score, User.email).join(User).filter(Rating.movie_id == movie_id).all()
+    # print movie_rating
+    # print len(movie_rating)
+    return render_template("place_details.html",
+                           display_place=place)
 
+@app.route("/opportunities")
+def opps_list():
+    """Show all movies"""
+
+    opps = Opportunity.query.order_by(Opportunity.title).all()
+    print opps
+    return render_template("opps_list.html", opps=opps)
+
+
+
+@app.route("/opportunities/<vm_id>")
+def show_opp(vm_id):
+    """Return page showing the details of movies."""
+
+    print vm_id
+    opp = Opportunity.query.get(vm_id)
+    print opp
+    print opp.vm_id
+    print opp.title
+    # print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
+    # movie_rating = db.session.query(Rating.score, User.email).join(User).filter(Rating.movie_id == movie_id).all()
+    # print movie_rating
+    # print len(movie_rating)
+    return render_template("opportunity_details.html",
+                           display_opp=opp)
 
 if __name__ == "__main__":
     # We have to set debug=True here, since it has to be True at the

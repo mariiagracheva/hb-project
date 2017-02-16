@@ -13,6 +13,25 @@ db = SQLAlchemy()
 ##############################################################################
 # Model definitions
 
+class Location(db.Model):
+    """docstring for Location"""
+    __tablename__ = "locations"
+
+    location_id = db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False)
+
+    lat = db.Column(db.String(16), nullable=True)
+    lng = db.Column(db.String(16), nullable=True)
+    st_add1 = db.Column(db.String(128), nullable=True) # street address
+    st_add2 = db.Column(db.String(128), nullable=True) # street address 2
+    city = db.Column(db.String(32), nullable=True) # city
+    zip_code = db.Column(db.Integer, nullable=True)
+    vm_id = db.Column(db.Integer, nullable=False) # file name which is a vm_id for the place or opportunity
+    # relationships
+
+    def __repr__(self):
+        return "<Location %s lat=%s, lng=%s>" %(self.location_id,
+                                                self.lat,
+                                                self.lng)
 class Place(db.Model):
     """User of ratings website."""
 
@@ -25,12 +44,12 @@ class Place(db.Model):
     name = db.Column(db.String(64), nullable=False)
     place_type = db.Column(db.String(64), nullable=True)
     img_url = db.Column(db.String(128), nullable=True)
-    descr = db.Column(db.String(512), nullable=True)
-    
-    location_id = db.Column(db.Integer, db.ForeignKey('locations.id'), nullable=False)
+    descr = db.Column(db.Text, nullable=True)
+
+    location_id = db.Column(db.Integer, db.ForeignKey('locations.location_id'), nullable=False)
 
     # relationships
-    location = db.relationship('Location', backref='locations')
+    location = db.relationship('Location', backref='places')
 
 
     def __repr__(self):
@@ -49,18 +68,18 @@ class Opportunity(db.Model):
     vm_id = db.Column(db.Integer, nullable=False, primary_key=True) # vm_id for easy access urls
     img_url = db.Column(db.String(256), nullable=True)
     parent_place = db.Column(db.Integer, db.ForeignKey('places.vm_id'), nullable=False)
-    location_id = db.Column(db.Integer, db.ForeignKey('locations.id'), nullable=False)
+    location_id = db.Column(db.Integer, db.ForeignKey('locations.location_id'), nullable=False)
     availability = db.Column(db.String(512), nullable=True) # json-string
     
     # from OG html pages (more trustful)
-    time = db.Column(db.String(128), nullable=True)
-    descr = db.Column(db.String(256), nullable=True)
+    opp_time = db.Column(db.String(128), nullable=True)
+    descr = db.Column(db.Text, nullable=True)
     opp_type = db.Column(db.String(8), nullable=True)
     title = db.Column(db.String(128), nullable=True)
 
     # relationships
     host_place = db.relationship('Place', backref='places')# linked to Place by place_id
-    location = db.relationship('Location', backref='locations')
+    location = db.relationship('Location', backref='opportunities')
 
 
     def __repr__(self):
@@ -68,25 +87,6 @@ class Opportunity(db.Model):
         return "<Opportunity title=%s vm_id=%s>" % (self.title,
                                                     self.vm_id)
 
-class Location(object):
-    """docstring for Location"""
-    __tablename__ = "locations"
-
-    location_id = db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False)
-
-    lat = db.Column(db.Numeric(6, 4, True), nullable=True)
-    lng = db.Column(db.Numeric(6, 4, True) nullable=True)
-    st_add1 = db.Column(db.Integer, nullable=True) # street address
-    st_add2 = db.Column(db.String(15), nullable=True) # street address 2
-    city = db.Column(db.String(15), nullable=True) # city
-    zip_code = db.Column(db.Integer(64), nullable=True)
-    vm_id = db.Column(db.Integer, nullable=False) # file name which is a vm_id for the place or opportunity
-    # relationships
-
-    def __repr__(self):
-        return "<Location %s lat=%s, lng=%s>" %(self.location_id,
-                                                self.lat,
-                                                self.lng)
 
 class Category(db.Model):
     """Categories"""
@@ -98,10 +98,10 @@ class Category(db.Model):
 
 
     # relationships using placecategory and opportunitycategory as secondaries
-    places = db.relationship("PlaceCategory",
+    places = db.relationship("Place",
                                 secondary="places_categories",
                                 backref="categories")
-    opportunities = db.relationship("OpportunityCategory",
+    opportunities = db.relationship("Opportunity",
                                     secondary="opportunities_categories",
                                     backref="categories")
 
@@ -115,7 +115,7 @@ class PlaceCategory(db.Model):
     """Association table for places' categories"""
 
     __tablename__ = 'places_categories'
-    place_category_id = db.Column(db.Integer, primary_key=True)
+    place_category_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     place_id = db.Column(db.Integer,
                          db.ForeignKey('places.vm_id'),
                          nullable=False)
@@ -127,7 +127,7 @@ class OpportunityCategory(db.Model):
     """Association table for opportunities' categories"""
 
     __tablename__ = 'opportunities_categories'
-    opportunity_category_id = db.Column(db.Integer, primary_key=True)
+    opportunity_category_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     opportunity_id = db.Column(db.Integer,
                          db.ForeignKey('opportunities.vm_id'),
                          nullable=False)

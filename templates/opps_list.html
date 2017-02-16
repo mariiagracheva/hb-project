@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block content %}
+
+    <h2>Opportuities</h2>
+    <ul>
+      {% for opp in opps %}
+          <li>
+              <a href="/opportunities/{{ opp.vm_id }}">
+                {{ opp.opp_title }} ({{ opp.opp_time }})
+              </a>
+          </li>
+      {% endfor %}
+    </ul>
+
+{% endblock %}

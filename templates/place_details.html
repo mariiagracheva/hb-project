@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <h2>{{ display_place.name }}</h2>
+        <p>{{ display_place.place_type }}</p>
+        <p>About us: {{display_place.descr}}</p>
+        <p>Address: {{display_place.location.city}}</p>
+        <p>lat and long: {{display_place.location.lat}},{{display_place.location.lng}}</p>
+        <
+        <img src="{{ display_place.img_url }}" alt="here could be an image">
+        
+<iframe
+  width="600"
+  height="450"
+  frameborder="0" style="border:0"
+  src="https://www.google.com/maps/embed/v1/view?key=AIzaSyBIX97LpSGWoozB3nKv8NrSXwMpdHVzIXs&center={{display_place.location.lat}},{{display_place.location.lng}}&zoom=15" allowfullscreen>
+</iframe>
+
+    {% if "logged_in_user_id" in session %}
+        <form id="comment_form">
+            Your Comment: <input id = "comment" type="number" name="score">
+            <button type="submit">Save!</button>
+        </form><br>    
+    {% endif %}    
+
+
+    <script src="http://code.jquery.com/jquery.js"></script>
+    <script>
+    
+    </script>
+{% endblock %}

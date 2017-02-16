@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <h2>Help with {{display_opp.parent_place}}</h2>
+        <p>Type: {{ display_opp.place_type }}</p>
+        <p>When: {{display_opp.opp_time}}</p>
+        <p>{{ display_opp.descr }}</p>
+        <p>Description: {{ display_opp.descr }}</p>
+        <p>Address: {{display_opp.location_id}} </p>
+        <img src="{{ display_opp.img_url }}" alt="here could be an image">
+
+    {% if "logged_in_user_id" in session %}
+        <form id="comment_form">
+            Your Comment: <input id = "comment" type="number" name="score">
+            <button type="submit">Save!</button>
+        </form><br>    
+    {% endif %}    
+
+
+    <script src="http://code.jquery.com/jquery.js"></script>
+    <script>
+    
+    </script>
+{% endblock %}

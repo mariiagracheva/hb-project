@@ -66,16 +66,16 @@ class Opportunity(db.Model):
 
     # from API
     vm_id = db.Column(db.Integer, nullable=False, primary_key=True) # vm_id for easy access urls
-    img_url = db.Column(db.String(256), nullable=True)
-    parent_place = db.Column(db.Integer, db.ForeignKey('places.vm_id'), nullable=False)
-    location_id = db.Column(db.Integer, db.ForeignKey('locations.location_id'), nullable=False)
-    availability = db.Column(db.String(512), nullable=True) # json-string
+    img_url = db.Column(db.Text, nullable=True)
+    parent_place = db.Column(db.Integer, db.ForeignKey('places.vm_id'), nullable=True)
+    location_id = db.Column(db.Integer, db.ForeignKey('locations.location_id'), nullable=True)
+    availability = db.Column(db.Text, nullable=True) # json-string
     
     # from OG html pages (more trustful)
-    opp_time = db.Column(db.String(128), nullable=True)
+    opp_time = db.Column(db.Text, nullable=True)
     descr = db.Column(db.Text, nullable=True)
-    opp_type = db.Column(db.String(8), nullable=True)
-    title = db.Column(db.String(128), nullable=True)
+    opp_type = db.Column(db.Text, nullable=True)
+    title = db.Column(db.Text, nullable=True)
 
     # relationships
     host_place = db.relationship('Place', backref='places')# linked to Place by place_id
@@ -154,4 +154,6 @@ if __name__ == "__main__":
 
     from server import app
     connect_to_db(app)
+    db.create_all()
     print "Connected to DB."
+

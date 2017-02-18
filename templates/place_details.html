@@ -4,7 +4,7 @@
 
     <h2>{{ display_place.name }}</h2>
         <p>{{ display_place.place_type }}</p>
-        <p>About us: {{display_place.descr}}</p>
+        <p>About us: {{display_place.descr|safe}}</p>
         <p>Address: {{display_place.location.city}}</p>
         <p>lat and long: {{display_place.location.lat}},{{display_place.location.lng}}</p>
         <

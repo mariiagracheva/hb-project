@@ -242,8 +242,8 @@ if __name__ == "__main__":
     db.create_all()
 
     # Import different types of data
-    # load_places_and_locations()
+    load_places_and_locations()
     load_opportunities_and_locations()
-    # load_categories()
-    # load_place_category()
-    # load_opportunity_category()
+    load_categories()
+    load_place_category()
+    load_opportunity_category()

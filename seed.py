@@ -1,4 +1,5 @@
 from sqlalchemy import func
+from sqlalchemy.orm.exc import NoResultFound
 from model import Place
 from model import Opportunity
 from model import Category
@@ -49,7 +50,12 @@ def load_places_and_locations():
         except:
             zip_code = ''
 
-        loc = db.session.query(Location.location_id).filter(Location.lat == lat, Location.lng == lng).all()
+        loc = db.session.query(Location.location_id).filter(Location.vm_id == vm_id).all()
+
+        # if vm_id == 315384:
+        #     print lat
+        #     print lng
+        #     print loc
 
         if not loc:
             location = Location(lat=lat,
@@ -60,10 +66,7 @@ def load_places_and_locations():
                             zip_code=zip_code,
                             vm_id = vm_id)
             db.session.add(location)
-            db.session.commit()
-            print location
 
-            # loc = db.session.query(Location.location_id).filter(Location.lat == lat, Location.lng == lng).all()
 
     for line in open('organizations.json'):
          for org in json.loads(line)['organizations']:
@@ -80,14 +83,16 @@ def load_places_and_locations():
                             img_url = img_url,
                             descr = descr,
                             location = location)
-                print place
-                db.session.add(place)
-                print "place added"
-                db.session.commit()
-                print "place commited"
-            except Exception:
+
+            except NoResultFound:
                 print org['id'], 'not found'
                 continue
+
+            print place
+            db.session.add(place)
+            print "place added"
+            db.session.commit()
+            print "place commited"
 
             
 
@@ -105,8 +110,8 @@ def load_opportunities_and_locations():
         try:
             data = json.loads(open(dir+'/'+infile).read())
         except Exception:
-                print vm_id, 'no longer available'
-                continue
+            print vm_id, 'no longer available'
+            continue
 
         # get location's data
         lat = data['latitude']
@@ -122,7 +127,7 @@ def load_opportunities_and_locations():
         city = data['city']
         zip_code = data['zip_code']
 
-        loc = db.session.query(Location.location_id).filter(Location.lat == lat, Location.lng == lng).all()
+        loc = db.session.query(Location.location_id).filter(Location.vm_id == vm_id).all()
 
         if not loc:
             location = Location(lat=lat,
@@ -136,57 +141,55 @@ def load_opportunities_and_locations():
             db.session.commit()
             loc = db.session.query(Location.location_id).filter(Location.lat == lat, Location.lng == lng).all()
         # validate data type
-        descr = data['description']
-        title = data['title']
+        # descr = data['description']
+        # title = data['title']
+
         opp_time = data['opp_time']
         opp_type = data['opp_type']
+
+        opp = db.session.query(Opportunity.vm_id).filter(Opportunity.vm_id == vm_id).all()
+
+        if not opp:
+            opp = Opportunity(vm_id=vm_id,
+                              opp_time=opp_time,
+                              opp_type=opp_type,
+                              location=location)
+            db.session.add(opp)
+            db.session.commit()
     print "OPEN OPPORTUNITIES.JSON"    
 
-    # !!!!!!!!!!!!!!!!!!!!!!!!!!!broken loc!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    for line in open('opportunities.json'): # 1836188
+    for line in open('opportunities.json'):
         for opp in json.loads(line)['opportunities']:
-            img_url = opp['imageUrl']
-            parent_place = json.dumps(opp['parentOrg'])
-            location_id = loc
-            availability = json.dumps(opp['availability'])
-            
-            if vm_id == '1836188':
-                continue
-            else:
-                try:
-                    location = Location.query.filter_by(vm_id=opp['id']).one()
-                except Exception:
-                    print vm_id, 'not found or more than one'
-                    continue
-                opportunity = Opportunity(vm_id = opp['id'],
-                                img_url = img_url,
-                                parent_place = parent_place,
-                                location_id = location,
-                                availability = availability,
-                                opp_time = opp_time,
-                                descr = descr,
-                                opp_type = opp_type,
-                                title = title)
-                db.session.add(opportunity)
+            try:
+                cur_opp = Opportunity.query.filter_by(vm_id=opp['id']).first()
+                cur_opp.img_url = opp['imageUrl']
+                cur_opp.parent_place = opp['parentOrg']['id']
+                cur_opp.descr = opp['plaintextDescription']
+                cur_opp.title = opp['title']
+                cur_opp.availability = json.dumps(opp['availability'])
+    
+                db.session.add(cur_opp)
+                print 'opp added'
+                print cur_opp
                 db.session.commit()
-
-
+                print 'opp commited'
+            except:
+                print 'was not commited opp:', opp['id'], 'parentOrg', opp['parentOrg']['id']
+                continue
+            
 
 
 def load_categories():
     """Load categories from meta.json"""
     print 'load_categories'
-
-    f = open('meta.json').read()
     
-    for cat in json.loads(f)['categories']:
+    for cat in json.loads(open('meta.json').read())['categories']:
         vm_id = cat['id']
         category_name = cat['name']
         category = Category(vm_id=vm_id,
                             category_name=category_name)
         db.session.add(category)
-
-    db.session.commit()
+        db.session.commit()
     print "seeded load_categories"
 
 
@@ -205,7 +208,7 @@ def load_place_category():
                                               category_id =category_id)
                 db.session.add(placeCategory)
                 # try      
-    db.session.commit()
+                db.session.commit()
                 # except:
                 #     continue
 
@@ -214,9 +217,7 @@ def load_opportunity_category():
     """load association table OpportunityCategory from opportunities.json"""
     print 'load_opportunity_category'
 
-    f = open('opportunities.json')
-
-    for line in f:
+    for line in open('opportunities.json'):
         for opp in json.loads(line)['opportunities']:
             for i in range(len(opp['categoryIds'])):
                 opportunity_id = opp['id']
@@ -224,10 +225,9 @@ def load_opportunity_category():
                 opportunityCategory = OpportunityCategory(opportunity_id=opportunity_id,
                                                           category_id =category_id)
                 db.session.add(opportunityCategory)
-                try:
-                    db.session.commit()
-                except:
-                    continue
+                db.session.commit()
+    print 'opportunity_category loaded'
+
 
 
 
@@ -239,11 +239,12 @@ if __name__ == "__main__":
     connect_to_db(app)
 
     # In case tables haven't been created, create them
+    db.drop_all()
     db.create_all()
 
     # Import different types of data
-    load_places_and_locations()
-    load_opportunities_and_locations()
-    load_categories()
+    # load_places_and_locations()
+    # load_opportunities_and_locations()
+    # load_categories()
     load_place_category()
-    load_opportunity_category()
+    # load_opportunity_category()

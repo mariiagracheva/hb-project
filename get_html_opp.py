@@ -9,18 +9,25 @@ from bs4 import BeautifulSoup
 import sys
 
 # gets .json file, return list of id's by key = 'id'
-def get_list_of_ids(file, key):
-    f = open(file)
-    id_list = []
-    for line in f:
-        cur_len = len(json.loads(line)[key])
-        for i in range(cur_len):
-            # print type(json.loads(line)['organizations'][i]['id'])
-            cur_id = json.loads(line)[key][i]['id']
-            # print cur_id
-            id_list.append(cur_id)
-    print 'id_list created', len(id_list)
-    return id_list
+# ====== default version ======================
+# def get_list_of_ids(file, key):
+#     f = open(file)
+#     id_list = []
+#     for line in f:
+#         cur_len = len(json.loads(line)[key])
+#         for i in range(cur_len):
+#             # print type(json.loads(line)['organizations'][i]['id'])
+#             cur_id = json.loads(line)[key][i]['id']
+#             # print cur_id
+#             id_list.append(cur_id)
+#     print 'id_list created', len(id_list)
+#     return id_list
+
+def get_list_of_ids(file):
+    lst_opp = []
+    for line in open(file):
+        lst_opp.append(line.rstrip())
+    return lst_opp
 
 
 # already done, download html, extact
@@ -32,22 +39,22 @@ def get_og_data(document):
         og_data['opp_time'] = soup.find("span", class_="left").text.strip()
     except:
         pass
-    try:
-        og_data['opp_type'] = soup.find("meta", property="og:title")['content']
-    except:
-        pass
-    try:
-        og_data['cause'] = soup.find("meta", property="og:type")['content']
-    except:
-        pass
-    try:
-        og_data['description'] = soup.find("meta", property="og:description")['content']
-    except:
-        pass
-    try:
-        og_data['title'] = soup.find("meta", property="og:title")['content']
-    except:
-        pass
+    # try:
+    #     og_data['opp_type'] = soup.find("meta", property="og:title")['content']
+    # except:
+    #     pass
+    # try:
+    #     og_data['cause'] = soup.find("meta", property="og:type")['content']
+    # except:
+    #     pass
+    # try:
+    #     og_data['description'] = soup.find("meta", property="og:description")['content']
+    # except:
+    #     pass
+    # try:
+    #     og_data['title'] = soup.find("meta", property="og:title")['content']
+    # except:
+    #     pass
     try:
         og_data['latitude'] = soup.find("meta", property="og:latitude")['content']
     except:
@@ -76,10 +83,10 @@ def get_og_data(document):
         og_data['zip_code'] = soup.find("span", class_="postal-code").text.strip()
     except:
         pass
-    try:
-       og_data['country'] = soup.find("meta", property="og:country-name")['content']
-    except:
-        pass
+    # try:
+    #    og_data['country'] = soup.find("meta", property="og:country-name")['content']
+    # except:
+    #     pass
     return json.dumps(og_data)
 
 
@@ -93,8 +100,8 @@ def get_and_save_og(id):
     # =======================================================================
     # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!! CHANGE SUBDIR!!!!!!!!!!!!!!!!!!!!!!!!!!!
     # =======================================================================
-    here = '/home/vagrant/src/hb-project'
-    subdir = 'opp_json'
+    here = '/home/vagrant/src/hb-project/tmp'
+    subdir = 'opp_html'
     try:
         os.makedirs(subdir)
     except:
@@ -113,7 +120,7 @@ def get_and_save_og(id):
     outfile.close()
 
 
-opportunities_ids = get_list_of_ids('opportunities.json', 'opportunities')
+opportunities_ids = get_list_of_ids('tmp/opp_ids.txt')
 
 # opportunities_ids = [2592295]
 

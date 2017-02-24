@@ -8,19 +8,24 @@ import math
 from bs4 import BeautifulSoup
 import sys
 
-# gets .json file, return list of id's by key = 'id'
-def get_list_of_ids(file, key):
-    f = open(file)
-    id_list = []
-    for line in f:
-        cur_len = len(json.loads(line)[key])
-        for i in range(cur_len):
-            # print type(json.loads(line)['organizations'][i]['id'])
-            cur_id = json.loads(line)[key][i]['id']
-            # print cur_id
-            id_list.append(cur_id)
-    print 'id_list created', len(id_list)
-    return id_list
+# === gets .json file, return list of id's by key = 'id'=====
+# === default version =======================================
+# def get_list_of_ids(file, key):
+#     id_list = []
+#     for line in open(file):
+#         cur_len = len(json.loads(line)[key])
+#         for i in range(cur_len):
+#             cur_id = json.loads(line)[key][i]['id']
+#             id_list.append(cur_id)
+#     print 'id_list created', len(id_list)
+#     return id_list
+
+# ======= get org_ids only for opps =========================
+def get_list_of_ids(file):
+    set_orgs = set()
+    for line in open(file):
+        set_orgs.add(line.rstrip())       
+    return list(set_orgs)
 
 
 # already done, download html, extact
@@ -28,14 +33,14 @@ def get_og_data(document):
     soup = BeautifulSoup(document.text, 'html.parser')
     
     og_data = {}
-    try:
-        og_data['description'] = soup.find("meta", property="og:description")['content']
-    except:
-        pass
-    try:
-        og_data['title'] = soup.find("meta", property="og:title")['content']
-    except:
-        pass
+    # try:
+    #     og_data['description'] = soup.find("meta", property="og:description")['content']
+    # except:
+    #     pass
+    # try:
+    #     og_data['title'] = soup.find("meta", property="og:title")['content']
+    # except:
+    #     pass
     try:
         og_data['latitude'] = soup.find("meta", property="og:latitude")['content']
     except:
@@ -64,10 +69,10 @@ def get_og_data(document):
         og_data['zip_code'] = soup.find("span", class_="postal-code").text.strip()
     except:
         pass
-    try:
-        og_data['country'] = soup.find("meta", property="og:country-name")['content']
-    except:
-        pass
+    # try:
+    #     og_data['country'] = soup.find("meta", property="og:country-name")['content']
+    # except:
+    #     pass
 
     return json.dumps(og_data)
 
@@ -82,7 +87,8 @@ def get_and_save_og(id):
     # =======================================================================
     # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!! CHANGE SUBDIR!!!!!!!!!!!!!!!!!!!!!!!!!!!
     # =======================================================================
-    subdir = "org_json"
+    # subdir = "org_json"
+    subdir = 'tmp/org_html'
     try:
         os.makedirs(subdir)
     except:
@@ -101,7 +107,8 @@ def get_and_save_og(id):
     outfile.close()
 
 
-organizations_ids = get_list_of_ids('organizations.json', 'organizations')
+# organizations_ids = get_list_of_ids('organizations.json', 'organizations')
+organizations_ids = get_list_of_ids('tmp/org_ids.txt')
 
 # organizations_ids = [100592]
 

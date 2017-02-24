@@ -63,6 +63,7 @@ def load_places_and_locations():
                             vm_id=vm_id)
             db.session.add(location)
 
+    missing = open('missingOrgs.txt', 'w')
 
     for line in open('organizations.json'):
          for org in json.loads(line)['organizations']:
@@ -86,6 +87,7 @@ def load_places_and_locations():
 
             except NoResultFound:
                 print org['id'], 'no saved location found'
+                missing.write(str(org['id']) + "\n")
                 continue
 
             print place
@@ -243,12 +245,12 @@ if __name__ == "__main__":
     connect_to_db(app)
 
     # In case tables haven't been created, create them
-    # db.drop_all()
-    # db.create_all()
+    db.drop_all()
+    db.create_all()
 
     # Import different types of data
-    # load_places_and_locations()
-    load_opportunities_and_locations()
+    load_places_and_locations()
+    # load_opportunities_and_locations()
     # load_categories()
     # load_place_category()
     # load_opportunity_category()

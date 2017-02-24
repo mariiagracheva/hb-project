@@ -24,7 +24,7 @@ def load_places_and_locations():
     
     # Place.query.delete()
     # Location.query.delete()
-
+    added_locations = open('added_locations.txt', 'w')
     dir = 'org_html'
     listing = os.listdir(dir)
     for infile in listing:
@@ -61,7 +61,10 @@ def load_places_and_locations():
                             city=city,
                             zip_code=zip_code,
                             vm_id=vm_id)
+
             db.session.add(location)
+            line = str(location.location_id) + " " + str(location.vm_id)
+            added_locations.write(line)
 
     missing = open('missingOrgs.txt', 'w')
 
@@ -95,8 +98,9 @@ def load_places_and_locations():
             print "place added"
             db.session.commit()
             print "place commited"
-
             
+
+
 
 def load_opportunities_and_locations():
     """Load locations from opp_json/*.json and org_json/*.json"""
@@ -162,8 +166,32 @@ def load_opportunities_and_locations():
 
     for line in open('opportunities.json'):
         for opp in json.loads(line)['opportunities']:
-            if opp['parentOrg']['id'] == 452935:
-                print 'skip'
+            # if opp['parentOrg']['id'] == 452935:
+            #     print 'skip'
+            # check if parentOrg is table places.
+            # if not - add it with data from opportunities.json and html
+            try:
+                Place.query.filter_by(vm_id=opp['parentOrg']['id']).all()
+            except:
+                vm_id = opp['parentOrg']['id']
+                name = opp['parentOrg']['name']
+                # find it's location
+                # open file, read lat, lng
+                data = json.loads(open('org_html'+'/'+str(vm_id)+'.json').read())
+                lat = data['latitude']
+                lng = data['longitude']
+
+                location = Location.query.filter_by(lat=lat, lng=lng).one()
+
+                place = Place(vm_id = vm_id,
+                            name = name,
+                            location = location)
+                db.session.add(place)
+                db.session.commit()
+                print 'Missing places committed'
+
+
+# ================= default version ==================================
             try:
                 cur_opp = Opportunity.query.filter_by(vm_id=opp['id']).one()
                 cur_opp.img_url = opp['imageUrl']
@@ -183,7 +211,7 @@ def load_opportunities_and_locations():
                 print 'was not commited cur_opp:', opp['id'], 'parentOrg', opp['parentOrg']['id']
                 
             
-
+# ================= Category tables ===========================================
 
 def load_categories():
     """Load categories from meta.json"""
@@ -249,8 +277,8 @@ if __name__ == "__main__":
     db.create_all()
 
     # Import different types of data
-    load_places_and_locations()
-    # load_opportunities_and_locations()
+    # load_places_and_locations()
+    load_opportunities_and_locations()
     # load_categories()
     # load_place_category()
     # load_opportunity_category()

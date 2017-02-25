@@ -82,6 +82,14 @@ class Location(db.Model):
     zip_code = db.Column(db.Integer, nullable=True)
     # vm_id = db.Column(db.Integer, nullable=False) # file name which is a vm_id for the place or opportunity
     
+    # relationships using placelocation and opportunitylocation as secondaries
+    places = db.relationship("Place",
+                            secondary="places_locations",
+                            backref="locations")
+    opportunities = db.relationship("Opportunity",
+                                    secondary="opportunities_locations",
+                                    backref="locations")
+
     def __repr__(self):
         return "<Location %s lat=%s, lng=%s>" %(self.location_id,
                                                 self.lat,
@@ -98,6 +106,12 @@ class PlaceLocation(db.Model):
     location_id = db.Column(db.Integer, 
                             db.ForeignKey('locations.location_id'),
                             nullable=False)
+
+
+
+    def __repr__(self):
+        return "<place_location place_id=%s, location_id=%s>" %(self.place_id,
+                                                                self.location_id)
 
 class OpportunityLocation(db.Model):
     """Association table for places' categories"""

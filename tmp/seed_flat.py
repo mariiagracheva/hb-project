@@ -47,6 +47,7 @@ def load_places_and_locations():
             zip_code = data['zip_code']
         except:
             zip_code = ''
+        
 
         location = Location(lat=lat,
                             lng=lng,
@@ -115,8 +116,13 @@ def load_opportunities_and_locations():
             st_add2 = ''
         city = data['city']
         zip_code = data['zip_code']
+        try:
+            opp_time = data['opp_time']
+        except:
+            opp_time = ''
 
-        opportunity = Opportunity(vm_id=vm_id)
+        opportunity = Opportunity(vm_id=vm_id,
+                                  opp_time=opp_time)
         db.session.add(opportunity)
         db.session.commit()
 

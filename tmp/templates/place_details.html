@@ -58,24 +58,13 @@
 {% endblock %}
 
 {% endblock %}
-
 {% block content %}
 
     <h2>{{ place.name }}</h2>
-        <p>{{ place.place_type }}</p>
-        <p>About us: {{place.descr|safe}}</p>
-        <p>Address: {{ location.st_add1 }}, {{ location.st_add2 }}, {{ location.city }} {{ location.zip_code }}</p>
-        <p>lat and long: {{location.lat}},{{location.lng}}</p>
+        <p>About us: {{ place.descr|safe}}</p>
+        <p>{{ location.st_add1 }}, {{ location.st_add2 }}, {{ location.city }} {{ location.zip_code }}</p>
         <img src="{{ place.img_url }}" alt="here could be an image"><br>
     <div id="map" style="width:400px; height:400px;">Map:</div>
- <!-- 
- static google map      
-<iframe
-  width="600"
-  height="450"
-  frameborder="0" style="border:0"
-  src="https://www.google.com/maps/embed/v1/view?key=AIzaSyBIX97LpSGWoozB3nKv8NrSXwMpdHVzIXs&center={{display_place.location.lat}},{{display_place.location.lng}}&zoom=15" allowfullscreen>
-</iframe>
--->
+
 
 {% endblock %}

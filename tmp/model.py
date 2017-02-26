@@ -34,7 +34,7 @@ class Place(db.Model):
     # location = db.relationship('Location', backref='places')
     def __repr__(self):
         """Provide helpful represetration when printed"""
-        return "<Place vm_id=%s, %s>" % (self.vm_id, self.name.encode('ascii', 'ignore'))
+        return "<Place vm_id=%s, %s>" % (self.vm_id, self.name)
 
 
 class Opportunity(db.Model):

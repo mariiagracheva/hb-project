@@ -26,7 +26,7 @@
       function initialize() {
         var mapOptions = {
           zoom: 16,
-          center: {lat: {{display_opp.location.lat}}, lng: {{display_opp.location.lng}}}
+          center: {lat: {{location.lat}}, lng: {{location.lng}}}
         };
         map = new google.maps.Map(document.getElementById('map'),
             mapOptions);
@@ -34,7 +34,7 @@
         var marker = new google.maps.Marker({
           // The below line is equivalent to writing:
           // position: new google.maps.LatLng(-34.397, 150.644)
-          position: {lat: {{display_opp.location.lat}}, lng: {{display_opp.location.lng}}},
+          position: {lat: {{location.lat}}, lng: {{location.lng}}},
           map: map
         });
 
@@ -59,13 +59,13 @@
 {% endblock %}
 {% block content %}
 
-    <h2>Help with {{display_opp.parent_place}}</h2>
-        <p>Type: {{ display_opp.place_type }}</p>
-        <p>When: {{display_opp.opp_time}}</p>
-        <p>{{ display_opp.descr }}</p>
-        <p>Description: {{ display_opp.descr }}</p>
-        <p>Address: {{display_opp.location_id}} </p>
-        <img src="{{ display_opp.img_url }}" alt="here could be an image">
+    <h2>Help with {{opp.host_place.name}}</h2>
+        <p>Title: {{ opp.title }}</p>
+        <p>Time: {{ opp.opp_time}}</p>
+        <p>Description: {{ opp.descr }}</p>
+        <p>Address: {{ location.st_add1 }}, {{ location.st_add2 }}, {{ location.city }} {{ location.zip_code }}</p>
+        <img src="{{ opp.img_url }}" alt="here could be an image">
+    <div id="map" style="width:400px; height:400px;">Map:</div>
 
     {% if "logged_in_user_id" in session %}
         <form id="comment_form">

@@ -12,6 +12,7 @@
 <p><a href="/test">Test</a></p>
 
 <div id="map" style="height: 400px;"></div>
+<p id="loc"></p>
 
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBIX97LpSGWoozB3nKv8NrSXwMpdHVzIXs"></script>
 
@@ -25,6 +26,11 @@ function getLocation() {
         x.innerHTML = "Geolocation is not supported by this browser.";
     }
 }
+document.getElementById("loc").innerHTML = Date();
+// function showPosition(position) {
+//     x.innerHTML = "Latitude: " + position.coords.latitude + 
+//     "<br>Longitude: " + position.coords.longitude;
+// }
 
 var map;
 

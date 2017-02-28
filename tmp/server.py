@@ -5,7 +5,7 @@ from flask_debugtoolbar import DebugToolbarExtension
 from sqlalchemy.orm.exc import NoResultFound, MultipleResultsFound
 
 from model import connect_to_db, db, Place, Location, Opportunity, Category, PlaceCategory, OpportunityCategory, PlaceLocation, OpportunityLocation
-
+import json
 
 app = Flask(__name__)
 
@@ -71,6 +71,54 @@ def show_opp(vm_id):
                            opp=opp,
                            location=location)
 
+@app.route("/test")
+def test():
+
+    # opps = list(Opportunity.query.all())
+    # print type(opps)
+    # print opps[1]
+    # print type(json.dumps(opps))
+
+    data = {}
+    #print type(data)
+
+    opportunity_location = OpportunityLocation.query.all()
+
+    for opp_loc in opportunity_location:
+        # print type(opp_loc)
+        opp = opp_loc.opportunity_id
+        loc = Location.query.filter_by(location_id=opp_loc.location_id).one()
+
+
+        data[opp] = '%s,%s' %(loc.lat, loc.lng)
+    
+    #print data
+
+
+    return render_template("test.html")
+
+
+@app.route("/format-data")
+def format_data():
+    print "\n\n"
+    print "INSIDE FORMAT_DATA ROUTE"
+    data = {}
+    print type(data)
+
+    opportunity_location = OpportunityLocation.query.all()
+    print "\n\n"
+    for opp_loc in opportunity_location:
+        # print type(opp_loc)
+        opp = opp_loc.opportunity_id
+        loc = Location.query.filter_by(location_id=opp_loc.location_id).one()
+
+        data[opp] = '%s,%s' %(loc.lat, loc.lng)
+        print opp, data[opp]
+    print "\n***********************************"
+
+    return jsonify(data)
+
+
 if __name__ == "__main__":
     # We have to set debug=True here, since it has to be True at the
     # point that we invoke the DebugToolbarExtension
@@ -80,6 +128,6 @@ if __name__ == "__main__":
     connect_to_db(app)
 
     # Use the DebugToolbar
-    DebugToolbarExtension(app)
+    # DebugToolbarExtension(app)
 
     app.run(port=5000, host='0.0.0.0')

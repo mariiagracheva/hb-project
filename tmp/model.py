@@ -62,8 +62,10 @@ class Opportunity(db.Model):
 
     def __repr__(self):
         """Provide helpful represetration when printed"""
-        return "<Opportunity title=%s vm_id=%s>" % (self.title,
-                                                    self.vm_id)
+        title__ = self.title.encode("ascii", "ignore")
+        vm_id__ = self.vm_id
+        return "title=%s vm_id=%s" % (title__,
+                                                    vm_id__)
 
 
 # ================= Location tables ==========================================

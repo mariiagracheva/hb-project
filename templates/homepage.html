@@ -1,6 +1,8 @@
 {% extends 'base.html' %}
 {% block head %}
-{% endblock %}
+    <script src="http://code.jquery.com/jquery.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBIX97LpSGWoozB3nKv8NrSXwMpdHVzIXs"></script>
+  {% endblock %}
 
 {% block content %}
 
@@ -9,47 +11,65 @@
 <h2></h2>
 <p><a href="/places">View all volunteer places</a></p>
 <p><a href="/opportunities">View all volunteer opportunities</a></p>
-<p><a href="/test">Test</a></p>
+<!-- s<p><a href="/test">Test</a></p> -->
 
-<div id="map" style="height: 400px;"></div>
+<div id="map" style="height: 400px;""></div>
+    
+    <script>
+    
+      var x = document.getElementById("map");
+      var map;
 
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBIX97LpSGWoozB3nKv8NrSXwMpdHVzIXs"></script>
-
-<script>
-    var x = document.getElementById("map");
-
-    function getLocation() {
+      function initMap(opps) {
+        console.log('get position');
         if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(createMap);
-        } else { 
-            x.innerHTML = "Geolocation is not supported by this browser.";
+          navigator.geolocation.getCurrentPosition(function(position) {
+            // console.log('PING')
+            console.log(position.coords.latitude);
+            console.log(position.coords.longitude);
+
+            var mapOptions = {
+              zoom: 15,
+              center: {lat: position.coords.latitude, lng: position.coords.longitude}
+            };
+            // debugger;
+            map = new google.maps.Map(document.getElementById('map'), mapOptions);
+            
+            var marker = new google.maps.Marker({
+              position: {lat: position.coords.latitude, lng: position.coords.longitude}, 
+              map: map,
+              title: "You're here!"
+            });
+            // console.log(opps)
+            
+            // opps = {"27713": "37.72766,-122.43056"};
+            for (var opp in opps) {
+              var oppLat = parseFloat(opps[opp].split(',')[0]);
+              var oppLng = parseFloat(opps[opp].split(',')[1]);
+              var oppTitle = opps[opp].split(',')[5];
+              var oppUrl = "/opportunities/"+opp;
+              // console.log(oppUrl);
+              var marker = new google.maps.Marker({
+                position: {lat: oppLat, lng: oppLng},
+                map: map,
+                title: oppTitle,
+                url: oppUrl
+              });
+              google.maps.event.addListener(marker, 'click', function() {window.location.href = this.url;});
+            }
+          })
         }
-    }
+        
+        else { 
+          x.innerHTML = "Geolocation is not supported by this browser.";
+        }
+      };
 
-    var map;
+      function get_all_opps(){
+        $.get('/format-data', initMap);
+      }
 
-    function createMap(position) {
-
-        console.log(position);
-
-        var mapOptions = {
-          zoom: 16,
-          center: {lat: position.coords.latitude, lng: position.coords.longitude}
-        };
-
-        map = new google.maps.Map(document.getElementById('map'), mapOptions);
-
-        var marker = new google.maps.Marker({position: {lat: position.coords.latitude, lng: position.coords.longitude}, 
-            map: map});
-
-        var infowindow = new google.maps.InfoWindow({content: '<p>Marker Location:' + marker.getPosition() + '</p>'});
-
-        google.maps.event.addListener(marker, 'click', function() {infowindow.open(map, marker); });
-
-    }
-
-    getLocation();
-
-</script>
+      get_all_opps();
+    </script>
 
 {% endblock %}

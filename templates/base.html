@@ -11,6 +11,7 @@
   <a href="/">Home</a><br>
   Find a volunteer place
   <BR>
+  <p id="time-date"></p>
   {% if "logged_in_user_id" in session %}
     <a href="/logout">Logout</a>
   {% else %}
@@ -26,6 +27,8 @@
   
   {% block content %}
   {% endblock %}
-
+  <script>
+    document.getElementById("time-date").innerHTML = Date();
+  </script>
 </body>
 </html>

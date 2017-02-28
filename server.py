@@ -100,21 +100,24 @@ def test():
 
 @app.route("/format-data")
 def format_data():
-    print "\n\n"
-    print "INSIDE FORMAT_DATA ROUTE"
+    # print "\n\n"
+    # print "INSIDE FORMAT_DATA ROUTE"
     data = {}
-    print type(data)
+    # print type(data)
 
     opportunity_location = OpportunityLocation.query.all()
-    print "\n\n"
+    # print "\n\n"
     for opp_loc in opportunity_location:
         # print type(opp_loc)
         opp = opp_loc.opportunity_id
         loc = Location.query.filter_by(location_id=opp_loc.location_id).one()
 
         data[opp] = '%s,%s' %(loc.lat, loc.lng)
-        print opp, data[opp]
-    print "\n***********************************"
+    #     print opp, data[opp]
+    #     print type(opp), type(data[opp])
+    # print "\n***********************************"
+    # print len(data)
+    print type(data.keys())
 
     return jsonify(data)
 

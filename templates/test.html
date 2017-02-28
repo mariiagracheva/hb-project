@@ -1,63 +1,56 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <style>
-      /* Always set the map height explicitly to define the size of the div
-       * element that contains the map. */
-      #map {
-        height: 500px;
-      }
-      /* Optional: Makes the sample page fill the window. */
-      html, body {
-        height: 600px;
-        width: 600px;
-        margin: 50px;
-        padding: 0;
-      }
-    </style>
     <script src="http://code.jquery.com/jquery.js"></script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBIX97LpSGWoozB3nKv8NrSXwMpdHVzIXs">
-    </script>
-
-
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBIX97LpSGWoozB3nKv8NrSXwMpdHVzIXs"></script>
   </head>
+  
   <body>
-    <div id="map"></div>
+    <div id="map" style="height: 400px;""></div>
     
     <script>
     
       var x = document.getElementById("map");
       var map;
 
-
-
       function initMap(opps) {
-        // debugger;
-
         console.log('get position');
         if (navigator.geolocation) {
           navigator.geolocation.getCurrentPosition(function(position) {
-
+            // console.log('PING')
             console.log(position.coords.latitude);
             console.log(position.coords.longitude);
 
             var mapOptions = {
-              zoom: 16,
+              zoom: 12,
               center: {lat: position.coords.latitude, lng: position.coords.longitude}
             };
+            // debugger;
             map = new google.maps.Map(document.getElementById('map'), mapOptions);
+            
             var marker = new google.maps.Marker({
               position: {lat: position.coords.latitude, lng: position.coords.longitude}, 
               map: map,
               title: "You're here!"
             });
-            for (var i = 0; i < opps.length; i++) {
-              console.log(opps[i])
-              var marker = new google.maps.Marker(
-              {
-                position: {lat: opps[i].lat, lng: opps[i].lng},
+            // console.log(opps)
+            
+            // opps = {"27713": "37.72766,-122.43056"};
+            for (var opp in opps) {
+              var oppLat = parseFloat(opps[opp].split(',')[0]);
+              var oppLng = parseFloat(opps[opp].split(',')[1])
+              var testMarker = new google.maps.Marker({
+                position: {lat: oppLat, lng: oppLng},
                 map: map
               });
+
+              // console.log(opp.split(':').length)
+              // console.log(opp.split(' '))
+              // var oppLatlng = new google.maps.LatLng(opps[opp]);
+              // var marker = new google.maps.Marker({
+              //   position: oppLatlng,
+              //   map: map
+              // });
 
             }
           })
@@ -68,47 +61,11 @@
         }
       };
 
-  
-
-      // function getLocation() {
-      //   console.log('get position');
-      //   if (navigator.geolocation) {
-      //     navigator.geolocation.getCurrentPosition(initMap);
-      //   } else { 
-      //     x.innerHTML = "Geolocation is not supported by this browser.";
-      //   }
-      //   console.log(position.coords.latitude);
-      //   console.log(position.coords.longitude);
-
-        // navigator.geolocation.getCurrentPosition(function(location) {
-        //   console.log(location.coords.latitude);
-        //   console.log(location.coords.longitude);
-        //   console.log(location.coords.accuracy);
-        // });
-      
-
       function get_all_opps(){
-        // debugger;
         $.get('/format-data', initMap);
       }
-// debugger;
-      // getLocation();
+
       get_all_opps();
-    
-
-    
-  
- 
-    
-
     </script>
-    <!-- <script type="text/javascript">
-    function test_func(data) {
-        console.log(data);
-    }
-    test_func({{ data|safe }})
-    </script> -->
-
-    <!-- {{ data }} -->
   </body>
 </html>

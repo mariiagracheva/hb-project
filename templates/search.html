@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% block content %}
+    <form class="search-form" id="search-form">
+      What are looking for?<br>
+      <input type="text" id="query">
+      <button type="submit" id="search">Search</button>
+    </form>
+    <div id="search-results"></div>
+
+
+<script src="http://code.jquery.com/jquery.js"></script>
+<script>
+
+
+function displayResults(){
+
+    console.log('PING');
+    // evt.preventDefault();
+    // var query = $('#query').val();
+    // console.log(query);
+
+    // var searchResult = document.getElementById("search-results");
+
+    // for (var opp in opps){
+    //     console.log(opp)
+    //     if (opps[opp].includes("a")){
+    //         console.log("a is in opp")
+    //         // searchResult.innerHTML = searchResult.innerHTML + opps[opp];
+    //     }
+    // }
+}
+
+// function getSearchResults(){
+//     // console.log("in callback");
+//     var query = $('#query').val();
+//     $.get('/get-results', {"query": query}, displayResults);
+// }
+
+function getSearchResults(){
+    var query = $('#query').val();
+    $.get('/get-results', {"query": query,}, displayResults);
+}
+
+$("#search").on("click", getSearchResults);
+
+</script>
+
+{% endblock %}
+

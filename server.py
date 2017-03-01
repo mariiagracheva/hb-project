@@ -111,27 +111,40 @@ def format_data():
         opp = opp_loc.opportunity_id
         opp_data = Opportunity.query.filter_by(vm_id=opp).one()
         loc = Location.query.filter_by(location_id=opp_loc.location_id).one()
-        # print opp_data.vm_id
-        """
-        0 - lat
-        1 - lng
-        2 - img_url
-        3 - descr
-        4 - categoryIds
-        5 - title
-        6 - tags
-        7 - opp_time
 
-        """
-
+        # 0 - lat
+        # 1 - lng
+        # 2 - img_url
+        # 3 - descr
+        # 4 - categoryIds
+        # 5 - title
+        # 6 - tags
+        # 7 - opp_time
         data[opp] = '%s,%s,%s,%s,%s,%s,%s,%s' %(loc.lat, loc.lng, opp_data.img_url, opp_data.descr, opp_data.categoryIds, opp_data.title, opp_data.tags, opp_data.opp_time)
-    #     print opp, data[opp]
-    #     print type(opp), type(data[opp])
-    # print "\n***********************************"
-    # print len(data)
+
     print type(data.keys())
 
     return jsonify(data)
+
+
+@app.route("/search")
+def search():
+    return render_template("search.html")
+
+
+@app.route("/get-results")
+def return_search_results():
+    data = {}
+    print "!!!!!!!!!!"
+    # query = str(request.form.get('query'))
+    # print query
+    found_opps = Opportunity.query.filter(Opportunity.title.like("%dog%")).all()
+    print len(found_opps)
+ 
+    return jsonify({1:4})
+
+
+
 
 
 if __name__ == "__main__":

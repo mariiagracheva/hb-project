@@ -11,6 +11,7 @@
 <h2></h2>
 <p><a href="/places">View all volunteer places</a></p>
 <p><a href="/opportunities">View all volunteer opportunities</a></p>
+<p><a href="/search">Search</a></p>
 <!-- s<p><a href="/test">Test</a></p> -->
 
 <div id="map" style="height: 400px;""></div>
@@ -38,7 +39,8 @@
             var marker = new google.maps.Marker({
               position: {lat: position.coords.latitude, lng: position.coords.longitude}, 
               map: map,
-              title: "You're here!"
+              title: "You're here!",
+              icon: 'http://maps.google.com/mapfiles/ms/micons/green.png'
             });
             // console.log(opps)
             

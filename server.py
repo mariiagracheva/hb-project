@@ -135,13 +135,17 @@ def search():
 @app.route("/get-results")
 def return_search_results():
     data = {}
-    print "!!!!!!!!!!"
-    # query = str(request.form.get('query'))
-    # print query
-    found_opps = Opportunity.query.filter(Opportunity.title.like("%dog%")).all()
-    print len(found_opps)
- 
-    return jsonify({1:4})
+    # print "!!!!!!!!!!"
+    searchquery = str(request.args.get('searchquery'))
+    print searchquery
+    found_opps = Opportunity.query.all()
+    for opp in found_opps:
+        data[opp.vm_id] = opp.title
+        # print opp.vm_id, data[opp.vm_id]
+    # print (found_opps)
+    # print json.dumps(data)
+
+    return json.dumps(data)
 
 
 

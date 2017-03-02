@@ -138,14 +138,15 @@ def return_search_results():
     # print "!!!!!!!!!!"
     searchquery = str(request.args.get('searchquery'))
     print searchquery
-    found_opps = Opportunity.query.all()
+    # found_opps = Opportunity.query.limit(10).all()
+    found_opps = Opportunity.query.filter(Opportunity.title.like("%"+searchquery+"%")).limit(100).all()
     for opp in found_opps:
         data[opp.vm_id] = opp.title
         # print opp.vm_id, data[opp.vm_id]
     # print (found_opps)
     # print json.dumps(data)
 
-    return json.dumps(data)
+    return jsonify(data)
 
 
 

@@ -3,7 +3,7 @@
     <form class="search-form" id="search-form">
       What are looking for?<br>
       <input type="text" id="searchquery">
-      <input type="button" id="searchbutton" value="Search"></input>
+      <input type="submit" id="searchbutton" value="Search"></input>
     </form>
     <div id="searchresults"></div>
 
@@ -14,43 +14,31 @@
 
 function displayResults(data){
 
-    // console.log("In displayResults");
-//     // console.log(event);
-    
-//     // console.log('PONG')
-
     var searchResult = document.getElementById("searchresults");
-    // console.log(data);
-    console.log("in displayResults");
-    for (var opp in data){
-        // console.log(data[]);
-           
-            searchResult.innerHTML = searchResult.innerHTML + data[opp];
-    }
-// }
 
-// // function getSearchResults(){
-// //     // console.log("in callback");
-// //     var query = $('#query').val();
-// //     $.get('/get-results', {"query": query}, displayResults);
+    for (opp in data){
+        console.log(data[opp]);
+        var newA = document.createElement('a');
+        var newBr = document.createElement('br');
+        newA.setAttribute('href', "/opportunities/" + opp);
+        newA.innerHTML = data[opp];
+        searchResult.appendChild(newA);
+        searchResult.append(newBr);
+    }
 }
 
 function getSearchResults(event){
     event.preventDefault();
+    var searchResult = document.getElementById("searchresults");
+    searchResult.innerHTML = "";
     console.log("in getSearchResults");
-    var searchquery = $('#searchquery').value;
+    var searchquery = $('#searchquery').val();
     console.log(searchquery);
     $.get("/get-results", {searchquery: searchquery}, displayResults);
 }
 
-// // $( "a" ).click(function( event ) {
-// //   event.preventDefault();
-// //   $( "<div>" )
-// //     .append( "default " + event.type + " prevented" )
-// //     .appendTo( "#log" );
-// // });
 
-$("#searchbutton").on("click", getSearchResults);
+$("#search-form").on("submit", getSearchResults);
 
 </script>
 

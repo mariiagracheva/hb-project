@@ -142,11 +142,15 @@ def return_search_results():
     found_opps = Opportunity.query.filter(Opportunity.title.like("%"+searchquery+"%")).limit(100).all()
     for opp in found_opps:
         data[opp.vm_id] = opp.title
+        # loc = OpportunityLocation.query.filter_by(opportunity_id=opp).one()
+        # data[opp.vm_id].append([loc.lat, loc.lng])
+
         # print opp.vm_id, data[opp.vm_id]
     # print (found_opps)
     # print json.dumps(data)
 
     return jsonify(data)
+
 
 
 

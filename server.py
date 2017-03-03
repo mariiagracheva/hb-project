@@ -7,6 +7,8 @@ from sqlalchemy.orm.exc import NoResultFound, MultipleResultsFound
 from model import connect_to_db, db, Place, Location, Opportunity, Category, PlaceCategory, OpportunityCategory, PlaceLocation, OpportunityLocation
 import json
 
+from if_available_now import if_available_now
+
 app = Flask(__name__)
 
 # Required to use Flask sessions and the debug toolbar
@@ -127,6 +129,31 @@ def format_data():
     return jsonify(data)
 
 
+@app.route("/filter-data")
+def return_filtered_format_data():
+
+    data = {}
+
+    opportunity_location = OpportunityLocation.query.all()
+    # print "\n\n"
+    for opp_loc in opportunity_location:
+        time = Opportunity.query.filter_by(vm_id=opp_loc.opportunity_id).one
+        if time == "now!":
+            opp = opp_loc.opportunity_id
+            opp_data = Opportunity.query.filter_by(vm_id=opp).one()
+            loc = Location.query.filter_by(location_id=opp_loc.location_id).one()
+
+            data[opp] = '%s,%s,%s,%s,%s,%s,%s,%s' %(loc.lat, loc.lng, opp_data.img_url, opp_data.descr, opp_data.categoryIds, opp_data.title, opp_data.tags, opp_data.opp_time)
+    print type(data.keys())
+    return jsonify(data)
+
+        # opp = opp_loc.opportunity_id
+        # opp_data = Opportunity.query.filter_by(vm_id=opp).one()
+        # loc = Location.query.filter_by(location_id=opp_loc.location_id).one()
+
+
+
+
 @app.route("/search")
 def search():
     return render_template("search.html")
@@ -150,6 +177,9 @@ def return_search_results():
     # print json.dumps(data)
 
     return jsonify(data)
+
+
+
 
 
 

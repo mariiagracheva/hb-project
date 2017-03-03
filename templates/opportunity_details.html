@@ -64,7 +64,7 @@
         <p>Time: {{ opp.opp_time}}</p>
         <p>Description: {{ opp.descr }}</p>
         <p>Address: {{ location.st_add1 }}, {{ location.st_add2 }}, {{ location.city }} {{ location.zip_code }}</p>
-        <img src="{{ opp.img_url }}" alt="here could be an image">
+        <!-- <img src="{{ opp.img_url }}" alt="here could be an image"> -->
     <div id="map" style="width:400px; height:400px;">Map:</div>
 
     {% if "logged_in_user_id" in session %}

@@ -1,15 +1,16 @@
 from datetime import datetime, date, time
 import time
+import pytz
 
 f = open('opps_times', 'r')
-
-# user date and time
-user_datetime = datetime.now()
-user_date = user_datetime.date()
-user_time = user_datetime.time()
+pacific = pytz.timezone('US/Pacific')
 
 
-for line in f:
+def if_available_now(line):
+
+    user_datetime = datetime.now(tz=pacific)
+    user_date = user_datetime.date()
+    user_time = user_datetime.time()
 
     line = line.replace(',', '').split(' - ')
     start_datetime = line[0].rstrip()
@@ -59,8 +60,19 @@ for line in f:
         print "Sorry"
 
 
+# user date and time
 
-print user_date, user_time
+
+
+for line in f:
+    if '' in line:
+        if_available_now(line)
+
+    
+
+
+
+# print user_date, user_time
 
 
 

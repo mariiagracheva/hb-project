@@ -9,9 +9,11 @@
 <h1></h1>
 
 <h2></h2>
-<p><a href="/places">Organizations</a></p>
-<p><a href="/opportunities">Opportunities</a></p>
+<p><a href="/places">View all volunteer places</a></p>
+<p><a href="/opportunities">View all volunteer opportunities</a></p>
 <p><a href="/search">Search</a></p>
+<button id="filter">Filter</button>
+
 
 <div id="map" style="height: 400px;""></div>
     
@@ -19,8 +21,9 @@
     
       var x = document.getElementById("map");
       var map;
+      var googleMarkers = []; 
 
-      function initMap(opps) {
+      function initMap() {
         console.log('get position');
         if (navigator.geolocation) {
           navigator.geolocation.getCurrentPosition(function(position) {
@@ -41,23 +44,6 @@
               title: "You're here!",
               icon: 'http://maps.google.com/mapfiles/ms/micons/green.png'
             });
-            // console.log(opps)
-            
-            // opps = {"27713": "37.72766,-122.43056"};
-            for (var opp in opps) {
-              var oppLat = parseFloat(opps[opp].split(',')[0]);
-              var oppLng = parseFloat(opps[opp].split(',')[1]);
-              var oppTitle = opps[opp].split(',')[5];
-              var oppUrl = "/opportunities/"+opp;
-              // console.log(oppUrl);
-              var marker = new google.maps.Marker({
-                position: {lat: oppLat, lng: oppLng},
-                map: map,
-                title: oppTitle,
-                url: oppUrl
-              });
-              google.maps.event.addListener(marker, 'click', function() {window.location.href = this.url;});
-            }
           })
         }
         
@@ -66,11 +52,49 @@
         }
       };
 
-      function get_all_opps(){
-        $.get('/format-data', initMap);
+      function putMarkers(opps){
+            
+        // opps = {"27713": "37.72766,-122.43056"};
+        for (var opp in opps) {
+          var oppLat = parseFloat(opps[opp].split(',')[0]);
+          var oppLng = parseFloat(opps[opp].split(',')[1]);
+          var oppTitle = opps[opp].split(',')[5];
+          var oppUrl = "/opportunities/"+opp;
+          // console.log(oppUrl);
+          var marker = new google.maps.Marker({
+            position: {lat: oppLat, lng: oppLng},
+            map: map,
+            title: oppTitle,
+            url: oppUrl
+          });
+          googleMarkers.push(marker);
+          google.maps.event.addListener(marker, 'click', function() {window.location.href = this.url;});
+        }
       }
 
-      get_all_opps();
+      // function removeMarkers(){
+      //   for(i=0; i<googleMarkers.length; i++){
+      //     googleMarkers[i].setMap(null);
+      //   }
+      // }
+
+
+      function getAllOpps(){
+        $.get('/format-data', putMarkers);
+      }
+
+      function getFilteredOpps(){
+        // console.log("in getFilteredOpps");
+        // removeMarkers();
+        $.get('/filter-data', putMarkers);
+      }
+
+      $("#filter").on("click", getFilteredOpps);
+    
+      getAllOpps();
+      initMap();
+
+
     </script>
 
 {% endblock %}

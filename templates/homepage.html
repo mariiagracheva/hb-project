@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block head %}
     <script src="http://code.jquery.com/jquery.js"></script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBIX97LpSGWoozB3nKv8NrSXwMpdHVzIXs"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBIX97LpSGWoozB3nKv8NrSXwMpdHVzIXs" async defer></script>
   {% endblock %}
 
 {% block content %}
@@ -12,7 +12,7 @@
 <p><a href="/places">View all volunteer places</a></p>
 <p><a href="/opportunities">View all volunteer opportunities</a></p>
 <p><a href="/search">Search</a></p>
-<button id="filter">Filter</button>
+<button id="filter">Filter is off</button>
 
 
 <div id="map" style="height: 400px;""></div>
@@ -50,10 +50,10 @@
         else { 
           x.innerHTML = "Geolocation is not supported by this browser.";
         }
-      };
+      }
 
       function putMarkers(opps){
-            
+        console.log("in putMarkers");      
         // opps = {"27713": "37.72766,-122.43056"};
         for (var opp in opps) {
           var oppLat = parseFloat(opps[opp].split(',')[0]);
@@ -67,16 +67,18 @@
             title: oppTitle,
             url: oppUrl
           });
+          console.log(marker);
           googleMarkers.push(marker);
           google.maps.event.addListener(marker, 'click', function() {window.location.href = this.url;});
+          // console.log(googleMarkers.length);
         }
       }
 
-      // function removeMarkers(){
-      //   for(i=0; i<googleMarkers.length; i++){
-      //     googleMarkers[i].setMap(null);
-      //   }
-      // }
+      function removeMarkers(){
+        for(i=0; i<googleMarkers.length; i++){
+          googleMarkers[i].setMap(null);
+        }
+      }
 
 
       function getAllOpps(){
@@ -84,15 +86,25 @@
       }
 
       function getFilteredOpps(){
-        // console.log("in getFilteredOpps");
-        // removeMarkers();
-        $.get('/filter-data', putMarkers);
+        console.log("in getFilteredOpps");
+        if (document.getElementById("filter").innerHTML == "Filter is off") {
+          document.getElementById("filter").innerHTML = "Filter is on";
+          removeMarkers();
+          $.get('/filter-data', putMarkers);
+        }
+        else {
+          document.getElementById("filter").innerHTML = "Filter is off";
+          removeMarkers();
+          $.get('/format-data', putMarkers);
+        }
+        console.log("changed set of markers");     
+        
       }
 
-      $("#filter").on("click", getFilteredOpps);
     
-      getAllOpps();
       initMap();
+      getAllOpps();
+      $("#filter").on("click", getFilteredOpps);
 
 
     </script>

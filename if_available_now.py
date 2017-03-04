@@ -13,6 +13,7 @@ def if_available_now(line):
     user_time = user_datetime.time()
 
     line = line.replace(',', '').split(' - ')
+    # print line
     start_datetime = line[0].rstrip()
     end_datetime = line[1].rstrip()
 
@@ -53,11 +54,11 @@ def if_available_now(line):
 
     if start_date < user_date and user_date < end_date:
         if start_time < user_time and user_time < end_time:
-            print "now!"
+            return "now!"
         else:
-            print "Available today"
+            return "Available today"
     else:
-        print "Sorry"
+        return "Sorry"
 
 
 # user date and time
@@ -65,8 +66,8 @@ def if_available_now(line):
 
 
 for line in f:
-    if '' in line:
-        if_available_now(line)
+    if ':' in line:
+        print if_available_now(line)
 
     
 

@@ -169,11 +169,6 @@ def return_search_results():
     for opp in found_opps:
         opp_loc = OpportunityLocation.query.filter_by(opportunity_id=opp.vm_id).one()
         loc = Location.query.filter_by(location_id=opp_loc.location_id).one()
-        # try:
-        #     time = if_available_now(opp.opp_time)
-        # except:
-        #     time = []
-        print time
         data[opp.vm_id] = [loc.lat, loc.lng, opp.img_url, opp.descr, opp.categoryIds, opp.title, opp.tags, opp.opp_time]
 
     return jsonify(data)

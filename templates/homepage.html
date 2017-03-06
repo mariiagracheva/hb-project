@@ -28,6 +28,7 @@
       var x = document.getElementById("map");
       var map;
       var googleMarkers = []; 
+      var googleMarkersFiltered = [];
 
       function initMap() {
         console.log('get position');
@@ -66,12 +67,14 @@
           var oppLng = parseFloat(opps[opp][1]);
           var oppTitle = opps[opp][5];
           var oppUrl = "/opportunities/"+opp;
+          var oppTime = opps[opp][7];
           // console.log(oppUrl);
           var marker = new google.maps.Marker({
             position: {lat: oppLat, lng: oppLng},
             map: map,
             title: oppTitle,
-            url: oppUrl
+            url: oppUrl,
+            time: oppTime
           });
           // console.log(marker);
           googleMarkers.push(marker);
@@ -79,12 +82,7 @@
           // console.log(googleMarkers.length);
         }
       }
-      function filterMarkers(){
-        var googleMarkersNow = [];
-        for (i = 0, i < googleMarkers.length; i++){
-          if
-        }
-      }
+
 
       function removeMarkers(){
         for(i=0; i<googleMarkers.length; i++){
@@ -97,15 +95,40 @@
         $.get('/format-data', putMarkers);
       }
 
-      function getFilteredOpps(){
+      function getFilteredOpps()
+      {
         console.log("in getFilteredOpps");
-        if (document.getElementById("filter").innerHTML == "Filter is off") {
+        var user_time = new Date();
+        console.log(user_time.getFullYear());
+        console.log(typeof user_time);
+
+        if (document.getElementById("filter").innerHTML == "Filter is off")
+        {
           document.getElementById("filter").innerHTML = "Filter is on";
-          console.log(googleMarkers[1]);
-          // removeMarkers();
-          $.get('/filter-data', putMarkers);
+          
+          for (i = 0; i < googleMarkers.length; i++)
+          {
+            dateTime = googleMarkers[i].time;
+            // console.log(dateTime);
+
+            if (dateTime.includes('|'))
+            {
+              dateTimeArray = dateTime.split('|');
+              console.log(dateTimeArray[0]);
+            }
+
+            else
+            {
+              // console.log("no time");
+              googleMarkersFiltered.push(googleMarkers[i]);
+              googleMarkers.splice(i,1);
+              googleMarkers[i].setMap(null);
+            }
+
+          }
         }
-        else {
+        else
+        {
           document.getElementById("filter").innerHTML = "Filter is off";
           // removeMarkers();
           $.get('/format-data', putMarkers);

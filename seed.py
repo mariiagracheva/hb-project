@@ -8,6 +8,7 @@ from model import PlaceCategory
 from model import OpportunityCategory
 from model import PlaceLocation
 from model import OpportunityLocation
+from format_time import format_time
 
 import datetime
 
@@ -117,7 +118,7 @@ def load_opportunities_and_locations():
         city = data['city']
         zip_code = data['zip_code']
         try:
-            opp_time = data['opp_time']
+            opp_time = format_time(data['opp_time'])
         except:
             opp_time = ''
 

@@ -13,6 +13,12 @@
 <p><a href="/opportunities">View all volunteer opportunities</a></p>
 <p><a href="/search">Search</a></p>
 <button id="filter">Filter is off</button>
+<form class="search-form" id="search-form">
+  What are looking for?<br>
+  <input type="text" id="searchquery">
+  <input type="submit" id="searchbutton" value="Search"></input>
+</form>
+    <div id="searchresults"></div>
 
 
 <div id="map" style="height: 400px;""></div>
@@ -56,9 +62,9 @@
         console.log("in putMarkers");      
         // opps = {"27713": "37.72766,-122.43056"};
         for (var opp in opps) {
-          var oppLat = parseFloat(opps[opp].split(',')[0]);
-          var oppLng = parseFloat(opps[opp].split(',')[1]);
-          var oppTitle = opps[opp].split(',')[5];
+          var oppLat = parseFloat(opps[opp][0]);
+          var oppLng = parseFloat(opps[opp][1]);
+          var oppTitle = opps[opp][5];
           var oppUrl = "/opportunities/"+opp;
           // console.log(oppUrl);
           var marker = new google.maps.Marker({
@@ -67,10 +73,16 @@
             title: oppTitle,
             url: oppUrl
           });
-          console.log(marker);
+          // console.log(marker);
           googleMarkers.push(marker);
           google.maps.event.addListener(marker, 'click', function() {window.location.href = this.url;});
           // console.log(googleMarkers.length);
+        }
+      }
+      function filterMarkers(){
+        var googleMarkersNow = [];
+        for (i = 0, i < googleMarkers.length; i++){
+          if
         }
       }
 
@@ -89,22 +101,35 @@
         console.log("in getFilteredOpps");
         if (document.getElementById("filter").innerHTML == "Filter is off") {
           document.getElementById("filter").innerHTML = "Filter is on";
-          removeMarkers();
+          console.log(googleMarkers[1]);
+          // removeMarkers();
           $.get('/filter-data', putMarkers);
         }
         else {
           document.getElementById("filter").innerHTML = "Filter is off";
-          removeMarkers();
+          // removeMarkers();
           $.get('/format-data', putMarkers);
         }
         console.log("changed set of markers");     
         
       }
 
+
+      function getSearchResults(event){
+        event.preventDefault();
+        removeMarkers();
+        var searchResult = document.getElementById("searchresults");
+        searchResult.innerHTML = "";
+        console.log("in getSearchResults");
+        var searchquery = $('#searchquery').val();
+        console.log(searchquery);
+        $.get("/get-results", {searchquery: searchquery}, putMarkers);
+      }
     
       initMap();
       getAllOpps();
       $("#filter").on("click", getFilteredOpps);
+      $("#search-form").on("submit", getSearchResults);
 
 
     </script>

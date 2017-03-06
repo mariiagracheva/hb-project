@@ -8,6 +8,8 @@ from model import connect_to_db, db, Place, Location, Opportunity, Category, Pla
 import json
 
 from if_available_now import if_available_now
+import datetime
+import pytz
 
 app = Flask(__name__)
 
@@ -122,9 +124,9 @@ def format_data():
         # 5 - title
         # 6 - tags
         # 7 - opp_time
-        data[opp] = '%s,%s,%s,%s,%s,%s,%s,%s' %(loc.lat, loc.lng, opp_data.img_url, opp_data.descr, opp_data.categoryIds, opp_data.title, opp_data.tags, opp_data.opp_time)
+        data[opp] = [loc.lat, loc.lng, opp_data.img_url, opp_data.descr, opp_data.categoryIds, opp_data.title, opp_data.tags, opp_data.opp_time]
 
-    print type(data.keys())
+    # print type(data.keys())
 
     return jsonify(data)
 
@@ -135,7 +137,7 @@ def return_filtered_format_data():
     data = {}
 
     opportunity_location = OpportunityLocation.query.all()
-    # print "\n\n"
+    print datetime.datetime.now(tz=pytz.timezone('US/Pacific'))
     for opp_loc in opportunity_location:
         time = Opportunity.query.filter_by(vm_id=opp_loc.opportunity_id).one
         if time == "now!":
@@ -147,9 +149,6 @@ def return_filtered_format_data():
     print type(data.keys())
     return jsonify(data)
 
-        # opp = opp_loc.opportunity_id
-        # opp_data = Opportunity.query.filter_by(vm_id=opp).one()
-        # loc = Location.query.filter_by(location_id=opp_loc.location_id).one()
 
 
 
@@ -168,13 +167,14 @@ def return_search_results():
     # found_opps = Opportunity.query.limit(10).all()
     found_opps = Opportunity.query.filter(Opportunity.descr.like("%"+searchquery+"%")).limit(100).all()
     for opp in found_opps:
-        data[opp.vm_id] = opp.title
-        # loc = OpportunityLocation.query.filter_by(opportunity_id=opp).one()
-        # data[opp.vm_id].append([loc.lat, loc.lng])
-
-        # print opp.vm_id, data[opp.vm_id]
-    # print (found_opps)
-    # print json.dumps(data)
+        opp_loc = OpportunityLocation.query.filter_by(opportunity_id=opp.vm_id).one()
+        loc = Location.query.filter_by(location_id=opp_loc.location_id).one()
+        # try:
+        #     time = if_available_now(opp.opp_time)
+        # except:
+        #     time = []
+        print time
+        data[opp.vm_id] = [loc.lat, loc.lng, opp.img_url, opp.descr, opp.categoryIds, opp.title, opp.tags, opp.opp_time]
 
     return jsonify(data)
 

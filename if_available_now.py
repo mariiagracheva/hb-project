@@ -6,15 +6,18 @@ f = open('opps_times', 'r')
 pacific = pytz.timezone('US/Pacific')
 
 
-def if_available_now(line):
+def format_time(line):
 
     user_datetime = datetime.now(tz=pacific)
     user_date = user_datetime.date()
     user_time = user_datetime.time()
 
-    line = line.replace(',', '').split(' - ')
-    start_datetime = line[0].rstrip()
-    end_datetime = line[1].rstrip()
+    try:
+        line = line.replace(',', '').split(' - ')
+        start_datetime = line[0].rstrip()
+        end_datetime = line[1].rstrip()
+    except:
+        return []
 
     if len(start_datetime) == len(end_datetime):
         
@@ -50,14 +53,15 @@ def if_available_now(line):
         end_date = start_date
         end_time = end_object.time()
         # print start_date, "!!!", end_date, "!!!", start_time, "!!!", end_time
+    return start_date, end_date, start_time, end_time
 
-    if start_date < user_date and user_date < end_date:
-        if start_time < user_time and user_time < end_time:
-            print "now!"
-        else:
-            print "Available today"
-    else:
-        print "Sorry"
+    # if start_date < user_date and user_date < end_date:
+    #     if start_time < user_time and user_time < end_time:
+    #         print "now!"
+    #     else:
+    #         print "Available today"
+    # else:
+    #     print "Sorry"
 
 
 # user date and time
@@ -65,8 +69,8 @@ def if_available_now(line):
 
 
 for line in f:
-    if '' in line:
-        if_available_now(line)
+    if '-' in line:
+        print format_time(line)
 
     
 

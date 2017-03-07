@@ -61,10 +61,10 @@
 
     <h2>Help with {{opp.host_place.name}}</h2>
         <p>Title: {{ opp.title }}</p>
-        <p>Time: {{ opp.opp_time}}</p>
+        <p>Date and Time: {{opp.opp_time}}</p>
         <p>Description: {{ opp.descr }}</p>
         <p>Address: {{ location.st_add1 }}, {{ location.st_add2 }}, {{ location.city }} {{ location.zip_code }}</p>
-        <!-- <img src="{{ opp.img_url }}" alt="here could be an image"> -->
+        <!-- <img src="{{ opp.img_url }}" alt="{{ opp.img_url }}"> -->
     <div id="map" style="width:400px; height:400px;">Map:</div>
 
     {% if "logged_in_user_id" in session %}

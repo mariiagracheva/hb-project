@@ -1,34 +1,55 @@
 {% extends 'base.html' %}
-{% block head %}
-    <script src="http://code.jquery.com/jquery.js"></script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBIX97LpSGWoozB3nKv8NrSXwMpdHVzIXs" async defer></script>
-  {% endblock %}
-
 {% block content %}
+<!-- <div class="row">
+  <div class="col-md-6">
 
-<h1></h1>
-
-<h2></h2>
-<p><a href="/places">View all volunteer places</a></p>
-<p><a href="/opportunities">View all volunteer opportunities</a></p>
-<p><a href="/search">Search</a></p>
-<button id="filter">Filter is off</button>
-<form class="search-form" id="search-form">
-  What are looking for?<br>
-  <input type="text" id="searchquery">
-  <input type="submit" id="searchbutton" value="Search"></input>
-</form>
-    <div id="searchresults"></div>
+  </div>
+  <div class="col-md-6">Second column</div>
+</div>
 
 
-<div id="map" style="height: 400px;""></div>
+<form class="navbar-form navbar-left">
+<div class="form-group">
+  <input type="text" class="form-control" placeholder="Search">
+</div>
+<button type="submit" class="btn btn-default">Search</button>
+</form> -->
+<div class="container">
+<div class="row">
+    <div class="col-md-8">
+    <div class="row">
+    <div class="col-md-3">
+        <span class="pull-right">
+            <button class="btn btn-default" type="button" id="filter">NOW</button>
+        </span>
+    </div>
+    <div class="col-md-9" id="search-form">
+        <div class="input-group">
+        <input type="text" class="form-control" placeholder="Keyword..." id="searchquery">
+        <span class="input-group-btn">
+            <button class="btn btn-default" type="button" id="searchbutton">Search</button>
+        </span>
+        </div><!-- /input-group -->
+    </div>
+    </div>
+    </div>
+</div>
+</div>
+<br>
+<br>
+<div class="container">
+    <div class="row">
+        <div class="col-sm-12 col-md-12 col-lg-12">
+            <div id="map" style="height: 600px;""></div>
+        </div>
+    </div>
+</div>
     
     <script>
     
       var x = document.getElementById("map");
       var map;
       var googleMarkers = []; 
-      var googleMarkersFiltered = [];
 
       function initMap() {
         console.log('get position');
@@ -39,7 +60,7 @@
             console.log(position.coords.longitude);
 
             var mapOptions = {
-              zoom: 15,
+              zoom: 13,
               center: {lat: position.coords.latitude, lng: position.coords.longitude}
             };
             // debugger;
@@ -74,12 +95,12 @@
             map: map,
             title: oppTitle,
             url: oppUrl,
-            time: oppTime
+            time: oppTime,
+            icon: 'http://maps.google.com/mapfiles/ms/micons/red.png'
           });
-          // console.log(marker);
+
           googleMarkers.push(marker);
           google.maps.event.addListener(marker, 'click', function() {window.location.href = this.url;});
-          // console.log(googleMarkers.length);
         }
       }
 
@@ -90,59 +111,95 @@
         }
       }
 
-
       function getAllOpps(){
         $.get('/format-data', putMarkers);
       }
 
       function getFilteredOpps()
       {
+        console.log("LLALALALA");
         console.log("in getFilteredOpps");
-        var user_time = new Date();
-        console.log(user_time.getFullYear());
-        console.log(typeof user_time);
+        var userTime = new Date();
+        var userYear = userTime.getFullYear();
+        
+        if (String(userTime.getMonth()+1).length == 1){
+          var userMonth = '0'+(userTime.getMonth()+1);
+        }else{
+          var userMonth = userTime.getMonth()+1;
+        }
+        if (String(userTime.getDate()).length == 1){
+          var userDate = '0' + userTime.getDate();
+        }else{
+          var userDate = '0' + userTime.getDate();
+        }
+        if (String(userTime.getHours()).length == 1){
+          var userHours = '0' + userTime.getHours();
+        }else{
+          var userHours = userTime.getHours();
+        }
+        if (String(userTime.getMinutes()).length == 1){
+          var userMinutes = '0' + userTime.getMinutes();
+        }else{
+          var userMinutes = userTime.getMinutes();
+        }
+        if (String(userTime.getSeconds()).length == 1){
+          var userSeconds = '0' + userTime.getSeconds();
+        }else{
+          var userSeconds = userTime.getSeconds();
+        }
+        var userCurrentDate = userYear+'-'+userMonth+'-'+userDate;
+        var userCurrentTime = userHours+':'+userMinutes+':'+userSeconds;
+        console.log(userYear+'-'+userMonth+'-'+userDate, userHours+':'+userMinutes+':'+userSeconds);
 
-        if (document.getElementById("filter").innerHTML == "Filter is off")
+        if (document.getElementById("filter").innerHTML == "NOW")
         {
-          document.getElementById("filter").innerHTML = "Filter is on";
+          console.log(document.getElementById("filter").innerHTML);
+          document.getElementById("filter").innerHTML = "ALL";
           
           for (i = 0; i < googleMarkers.length; i++)
           {
-            dateTime = googleMarkers[i].time;
-            // console.log(dateTime);
+            oppDateTime = googleMarkers[i].time;
 
-            if (dateTime.includes('|'))
-            {
-              dateTimeArray = dateTime.split('|');
-              console.log(dateTimeArray[0]);
+            if (oppDateTime.includes('|'))
+            { 
+              dateTimeArray = oppDateTime.split('|');
+              var oppStartDate = dateTimeArray[0];
+              var oppStartTime = dateTimeArray[2];
+              var oppEndDate = dateTimeArray[1];
+              var oppEndTime = dateTimeArray[3];
+              if ((oppStartDate < userCurrentDate) && (userCurrentDate < oppEndDate) && (oppStartTime < userCurrentTime) && (userCurrentTime < oppEndTime))
+              {
+                console.log("NOW");
+              }
+              else
+              {
+                googleMarkers[i].setIcon('http://maps.google.com/mapfiles/ms/micons/yellow.png');
+              }
             }
-
-            else
-            {
-              // console.log("no time");
-              googleMarkersFiltered.push(googleMarkers[i]);
-              googleMarkers.splice(i,1);
-              googleMarkers[i].setMap(null);
+            else {
+              googleMarkers[i].setIcon('http://maps.google.com/mapfiles/ms/micons/yellow.png');
             }
-
           }
         }
         else
         {
-          document.getElementById("filter").innerHTML = "Filter is off";
-          // removeMarkers();
-          $.get('/format-data', putMarkers);
+          document.getElementById("filter").innerHTML = "NOW";
+          // $.get('/format-data', putMarkers);
+          for (i = 0; i < googleMarkers.length; i++){
+            googleMarkers[i].setIcon('http://maps.google.com/mapfiles/ms/micons/red.png');
+            // google.maps.event.addListener(marker, 'click', function() {window.location.href = this.url;}
+          }
         }
         console.log("changed set of markers");     
-        
       }
 
 
       function getSearchResults(event){
         event.preventDefault();
         removeMarkers();
+        document.getElementById("filter").innerHTML = "NOW";
         var searchResult = document.getElementById("searchresults");
-        searchResult.innerHTML = "";
+        // searchResult.innerHTML = "";
         console.log("in getSearchResults");
         var searchquery = $('#searchquery').val();
         console.log(searchquery);
@@ -152,9 +209,9 @@
       initMap();
       getAllOpps();
       $("#filter").on("click", getFilteredOpps);
-      $("#search-form").on("submit", getSearchResults);
+      $("#searchbutton").on("click", getSearchResults);
 
 
     </script>
-
+</div>
 {% endblock %}

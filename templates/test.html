@@ -1,74 +1,62 @@
-{% extends 'base.html' %}
-  {% block head %}
-    <script src="http://code.jquery.com/jquery.js"></script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBIX97LpSGWoozB3nKv8NrSXwMpdHVzIXs"></script>
-  {% endblock %}
-</head>
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>jQCloud Example</title>
+    <link rel="stylesheet" type="text/css" href="/static/jqcloud.css" />
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
+    <script type="text/javascript" src="/static/jqcloud-1.0.4.js"></script>
+    <script type="text/javascript">
+      /*!
+       * Create an array of word objects, each representing a word in the cloud
+       */
+      var word_array = [
+          {text: "Community", weight: 390, link: "/opportunities/25"},
+          {text: "Children & Youth", weight: 223, link: "/opportunities/22"},
+          {text: "Education & Literacy", weight: 166, link: "/opportunities/15"},
+          {text: "Arts & Culture", weight: 138, link: "/opportunities/34"},
+          {text: "Health & Medicine", weight: 136, link: "/opportunities/11"},
+          {text: "Seniors", weight: 87, link: "/opportunities/12"},
+          {text: "Advocacy & Human Rights", weight: 86, link: "/opportunities/23"},
+          {text: "Environment", weight: 79, link: "/opportunities/13"}
+          // ...as many words as you want
+      ];
+// 390   25  Community
+// 223 22  Children & Youth
+// 166 15 Education & Literacy
+// 138 34  Arts & Culture
+// 136 11   Health & Medicine
+// 87  12  Seniors
+// 86  23  Advocacy & Human Rights
+// 79  13  Environment
+// 64  17  People with Disabilities
+// 61  37  Computers & Technology
+// 58  7   Homeless & Housing
+// 47  3  Women
+// 42  29  International
+// 37  27  Employment
+// 37  19  Sports & Recreation
+// 36  39   Hunger
+// 28  30  Animals
+// 22  41  Immigrants & Refugees
+// 22  31  LGBT
+// 22  14   Crisis Support
+// 15  38 Board Development
+// 14  40  Media & Broadcasting
+// 13  5 Justice & Legal
+// 11  43  Veterans & Military Families
+// 8   6 Politics
+// 7   33  Race & Ethnicity
+// 6   28  Emergency & Safety
+// 3   36  Faith-Based
 
-
-{% block content %}
-  <body>
-    <div id="map" style="height: 400px;""></div>
-    
-    <script>
-    
-      var x = document.getElementById("map");
-      var map;
-
-      function initMap(opps) {
-        console.log('get position');
-        if (navigator.geolocation) {
-          navigator.geolocation.getCurrentPosition(function(position) {
-            // console.log('PING')
-            console.log(position.coords.latitude);
-            console.log(position.coords.longitude);
-
-            var mapOptions = {
-              zoom: 16,
-              center: {lat: position.coords.latitude, lng: position.coords.longitude}
-            };
-            // debugger;
-            map = new google.maps.Map(document.getElementById('map'), mapOptions);
-            
-            var marker = new google.maps.Marker({
-              position: {lat: position.coords.latitude, lng: position.coords.longitude}, 
-              map: map,
-              title: "You're here!"
-            });
-            // console.log(opps)
-            
-            // opps = {"27713": "37.72766,-122.43056"};
-            for (var opp in opps) {
-              var oppLat = parseFloat(opps[opp].split(',')[0]);
-              var oppLng = parseFloat(opps[opp].split(',')[1])
-              var testMarker = new google.maps.Marker({
-                position: {lat: oppLat, lng: oppLng},
-                map: map
-              });
-
-              // console.log(opp.split(':').length)
-              // console.log(opp.split(' '))
-              // var oppLatlng = new google.maps.LatLng(opps[opp]);
-              // var marker = new google.maps.Marker({
-              //   position: oppLatlng,
-              //   map: map
-              // });
-
-            }
-          })
-        }
-        
-        else { 
-          x.innerHTML = "Geolocation is not supported by this browser.";
-        }
-      };
-
-      function get_all_opps(){
-        $.get('/format-data', initMap);
-      }
-
-      get_all_opps();
+      $(function() {
+        // When DOM is ready, select the container element and call the jQCloud method, passing the array of words as the first argument.
+        $("#example").jQCloud(word_array);
+      });
     </script>
+  </head>
+  <body>
+    <!-- You should explicitly specify the dimensions of the container element -->
+    <div id="example" style="width: 550px; height: 350px;"></div>
   </body>
-{% endblock %}
 </html>

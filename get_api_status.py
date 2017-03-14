@@ -10,7 +10,7 @@ nonce = hashlib.sha1().hexdigest()
 created = datetime.now().strftime("%Y-%m-%dT%H:%M:%S-0800")
 
 Username="mariiagracheva"
-Key="0b889c96111465444d53e3b71d5caba3"
+Key=VOLUNTEERMATCH_API_KEY
 PasswordDigest = base64.b64encode(hashlib.sha256((nonce+created+Key).encode('utf-8')).digest())
 url = "https://www.volunteermatch.org/api/call"
  

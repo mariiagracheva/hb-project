@@ -1,21 +1,58 @@
-{% extends 'base.html' %}Place details{% block title %}
-{% block head %}
-<meta name="viewport" content="initial-scale=1.0, user-scalable=no">
-    <meta charset="utf-8">
-    <style>
-      /* Always set the map height explicitly to define the size of the div
-       * element that contains the map. */
-      #map {
-        height: 100%;
-      }
-      /* Optional: Makes the sample page fill the window. */
-      html, body {
-        height: 100%;
-        margin: 0;
-        padding: 0;
-      }
-    </style>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBIX97LpSGWoozB3nKv8NrSXwMpdHVzIXs"></script>
+{% extends 'base.html' %}
+{% block content %}
+
+<!-- <div class="container">
+<div class="row">
+    <div class="col-md-8">
+    <div class="row">
+    <div class="col-md-3">
+        <span class="pull-right">
+            <button class="btn btn-default" type="button" id="filter">NOW</button>
+        </span>
+    </div>
+    <div class="col-md-9" id="search-form">
+        <div class="input-group">
+        <input type="text" class="form-control" placeholder="Keyword..." id="searchquery">
+        <span class="input-group-btn">
+            <button class="btn btn-default" type="button" id="searchbutton">Search</button>
+        </span>
+        </div>
+    </div>
+    </div>
+    </div>
+</div>
+</div> -->
+<br>
+<br>
+<div class="container">
+    <div class="row">
+        <div class="col-sm-4 col-md-4 col-lg-4">
+            <div id="map" style="height: 400px;""></div>
+        </div>
+<!--     </div>
+    <div class="row"> -->
+        <div class="col-sm-8 col-md-8 col-lg-8">
+            <div>
+            <h2>{{ opp.title }}</h2>
+            <p><h4>Date and Time:</h4>{{opp.opp_time.split('|')[0]}} - {{opp.opp_time.split('|')[1]}}</p>
+            <p>{{opp.opp_time.split('|')[2]}} - {{opp.opp_time.split('|')[3]}}</p>
+            <p><h4>Address:</h4> {{ location.st_add1 }} {{ location.st_add2 }} {{ location.city }} {{ location.zip_code }}</p>
+            <p><h4>About:</h4> {{ opp.descr }}</p>
+            <p>
+                {% for cat in categories%}
+                <a href="/opportunity/">{{cat}}</a>   
+                {% endfor %}
+            </p>
+            
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container">
+
+</div>
+
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBIX97LpSGWoozB3nKv8NrSXwMpdHVzIXs"></script>
     <script>
       // In this example, we center the map, and add a marker, using a LatLng object
       // literal instead of a google.maps.LatLng object. LatLng object literals are
@@ -54,29 +91,6 @@
 
       google.maps.event.addDomListener(window, 'load', initialize);
     </script>
-{% endblock %}
-
-{% endblock %}
-{% block content %}
-
-    <h2>Help with {{opp.host_place.name}}</h2>
-        <p>Title: {{ opp.title }}</p>
-        <p>Date and Time: {{opp.opp_time}}</p>
-        <p>Description: {{ opp.descr }}</p>
-        <p>Address: {{ location.st_add1 }}, {{ location.st_add2 }}, {{ location.city }} {{ location.zip_code }}</p>
-        <!-- <img src="{{ opp.img_url }}" alt="{{ opp.img_url }}"> -->
-    <div id="map" style="width:400px; height:400px;">Map:</div>
-
-    {% if "logged_in_user_id" in session %}
-        <form id="comment_form">
-            Your Comment: <input id = "comment" type="number" name="score">
-            <button type="submit">Save!</button>
-        </form><br>    
-    {% endif %}    
 
 
-    <script src="http://code.jquery.com/jquery.js"></script>
-    <script>
-    
-    </script>
 {% endblock %}

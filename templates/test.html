@@ -1,62 +1,75 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
-    <title>jQCloud Example</title>
-    <link rel="stylesheet" type="text/css" href="/static/jqcloud.css" />
-    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
-    <script type="text/javascript" src="/static/jqcloud-1.0.4.js"></script>
-    <script type="text/javascript">
-      /*!
-       * Create an array of word objects, each representing a word in the cloud
-       */
-      var word_array = [
-          {text: "Community", weight: 390, link: "/opportunities/25"},
-          {text: "Children & Youth", weight: 223, link: "/opportunities/22"},
-          {text: "Education & Literacy", weight: 166, link: "/opportunities/15"},
-          {text: "Arts & Culture", weight: 138, link: "/opportunities/34"},
-          {text: "Health & Medicine", weight: 136, link: "/opportunities/11"},
-          {text: "Seniors", weight: 87, link: "/opportunities/12"},
-          {text: "Advocacy & Human Rights", weight: 86, link: "/opportunities/23"},
-          {text: "Environment", weight: 79, link: "/opportunities/13"}
-          // ...as many words as you want
-      ];
-// 390   25  Community
-// 223 22  Children & Youth
-// 166 15 Education & Literacy
-// 138 34  Arts & Culture
-// 136 11   Health & Medicine
-// 87  12  Seniors
-// 86  23  Advocacy & Human Rights
-// 79  13  Environment
-// 64  17  People with Disabilities
-// 61  37  Computers & Technology
-// 58  7   Homeless & Housing
-// 47  3  Women
-// 42  29  International
-// 37  27  Employment
-// 37  19  Sports & Recreation
-// 36  39   Hunger
-// 28  30  Animals
-// 22  41  Immigrants & Refugees
-// 22  31  LGBT
-// 22  14   Crisis Support
-// 15  38 Board Development
-// 14  40  Media & Broadcasting
-// 13  5 Justice & Legal
-// 11  43  Veterans & Military Families
-// 8   6 Politics
-// 7   33  Race & Ethnicity
-// 6   28  Emergency & Safety
-// 3   36  Faith-Based
-
-      $(function() {
-        // When DOM is ready, select the container element and call the jQCloud method, passing the array of words as the first argument.
-        $("#example").jQCloud(word_array);
-      });
-    </script>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Bootstrap Template</title>
+    <link href="/static/css/bootstrap.min.css" rel="stylesheet">
+    <script src="http://code.jquery.com/jquery.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBIX97LpSGWoozB3nKv8NrSXwMpdHVzIXs" async defer></script>
   </head>
   <body>
-    <!-- You should explicitly specify the dimensions of the container element -->
-    <div id="example" style="width: 550px; height: 350px;"></div>
+    <nav class="navbar navbar-default">
+  <div class="container-fluid">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+   
+    </div>
+
+    
+    </div><!-- /.navbar-collapse -->
+  </div><!-- /.container-fluid -->
+</nav>
+
+{% block content %}
+<br>
+            <br>
+            <br>
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-sm-4 ">
+        <span class="pull-right">
+            <br>
+            <br>
+            <br>
+            
+        </span>
+    </div>
+    
+    <div class="col-sm-8" style="background-color:#aaff00;">
+            <br>
+            <br>
+            <br>
+        <h1>HelpAround</h1>
+        <h3>nearby volunteer opportunities</h3>
+        <h2>Mariia Gracheva</h2>
+        <h5>former analyst and project manager at Yandex</h5>
+        <br>
+            <br>
+            <br>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    <script src="/static/js/bootstrap.min.js"></script>
+    <script>
+    var userDateTime = new Date();
+    userMonth = userDateTime.getMonth() + 1;
+    userDate = userDateTime.getDate();
+    userHours = userDateTime.getHours();
+    userMinutes = userDateTime.getMinutes();
+    document.getElementById("time-date").innerHTML = userMonth + "/" + userDate + "  " + userHours + ":" + userMinutes;
+    // <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    </script>
   </body>
 </html>

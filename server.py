@@ -72,10 +72,6 @@ def show_opp(vm_id):
 
     opp = Opportunity.query.get(vm_id)
     # opp date_time
-    if '|' in opp.opp_time:
-        t = 1
-    else:
-        t = 0
     
     # img_url = opp.img_url
     # # img = urllib.unquote(urllib.unquote(img_url))
@@ -86,10 +82,19 @@ def show_opp(vm_id):
     opp_location = OpportunityLocation.query.filter_by(opportunity_id=vm_id).one()
     location = Location.query.filter_by(location_id=opp_location.location_id).one()
 
+    categories = []
+    opp_cats = OpportunityCategory.query.filter_by(opportunity_id=vm_id).all()
+    for cat in opp_cats:
+        cat_name = Category.query.filter_by(vm_id=cat.category_id).one().category_name
+        print type(cat_name)
+        categories.append(str(cat_name))
+
+
+
     return render_template("opportunity_details.html",
                            opp=opp,
                            location=location,
-                           t=t)
+                           categories=categories)
 
 @app.route("/test")
 def test():
@@ -173,6 +178,12 @@ def return_search_results():
 
     return jsonify(data)
 
+# @app.route("/tag/<vm_id>")
+# def return_tag_search():
+#     data = {}
+
+#     found_opps = OpportunityCategory.query.filter_by(category_id=vm_id).all()
+#     for opp in found_opps:
 
 
 if __name__ == "__main__":

@@ -92,5 +92,25 @@
       google.maps.event.addDomListener(window, 'load', initialize);
     </script>
 
+<<<<<<< HEAD
+=======
+{% endblock %}
+{% block content %}
+
+    <h2>Help with {{opp.host_place.name}}</h2>
+        <p>Title: {{ opp.title }}</p>
+        <p>Time: {{ opp.opp_time}}</p>
+        <p>Description: {{ opp.descr }}</p>
+        <p>Address: {{ location.st_add1 }}, {{ location.st_add2 }}, {{ location.city }} {{ location.zip_code }}</p>
+        <img src="{{ opp.img_url|safe }}" alt="here could be an image {{ opp.img_url|safe }}">
+    <div id="map" style="width:400px; height:400px;">Map:</div>
+
+    {% if "logged_in_user_id" in session %}
+        <form id="comment_form">
+            Your Comment: <input id = "comment" type="number" name="score">
+            <button type="submit">Save!</button>
+        </form><br>    
+    {% endif %}    
+>>>>>>> a17675d08986650741dae0acefb50cdd9b27f0b2
 
 {% endblock %}

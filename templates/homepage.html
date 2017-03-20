@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% block content %}
+<<<<<<< HEAD
 <!-- <div class="row">
   <div class="col-md-6">
 
@@ -236,4 +237,156 @@
 
     </script>
 </div>
+=======
+
+<h1></h1>
+
+<h2></h2>
+<p><a href="/places">Opranizations</a></p>
+<p><a href="/opportunities">Opportunities</a></p>
+<p><a href="/search">Search</a></p>
+<button id="filter">Click to see available NOW</button>
+
+<form class="search-form" id="search-form">
+      What are looking for?<br>
+      <input type="text" id="searchquery">
+      <input type="checkbox" id="now">NOW</ins>
+      <input type="submit" id="searchbutton" value="Search"></input>
+    </form>
+<div id="map" style="height: 400px; width: 600px;""></div>
+<div id="searchresults"></div>
+<!-- <tr> -->
+ <!--  <div id="map" style="height: 400px; width: 600px;""></div>
+  <div id="searchresults"></div> -->
+<!--   <td id="map" width="50%"></td>
+  <td id="searchresults" width="50%"></td> -->
+<!-- </tr> -->
+
+
+<script src="http://code.jquery.com/jquery.js"></script>
+<script>
+
+var x = document.getElementById("map");
+var map;
+var googleMarkers = []; 
+
+function initMap() {
+  // console.log('get position');
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(function(position) {
+      // console.log('PING')
+      // console.log(position.coords.latitude);
+      // console.log(position.coords.longitude);
+
+      var mapOptions = {
+        zoom: 15,
+        center: {lat: position.coords.latitude, lng: position.coords.longitude}
+      };
+      // debugger;
+      map = new google.maps.Map(document.getElementById('map'), mapOptions);
+      
+      var marker = new google.maps.Marker({
+        position: {lat: position.coords.latitude, lng: position.coords.longitude}, 
+        map: map,
+        title: "You're here!",
+        icon: 'http://maps.google.com/mapfiles/ms/micons/green.png'
+      });
+    })
+  }
+  
+  else { 
+    x.innerHTML = "Geolocation is not supported by this browser.";
+  }
+}
+
+function putMarkers(opps){
+  // console.log("in putMarkers");      
+  // opps = {"27713": "37.72766,-122.43056"};
+  for (var opp in opps) {
+    // var oppLat = parseFloat(opps[opp].split(',')[0]);
+    // var oppLng = parseFloat(opps[opp].split(',')[1]);
+    // var oppTitle = opps[opp].split(',')[5];
+    var oppLat = parseFloat(opps[opp][0]);
+    var oppLng = parseFloat(opps[opp][1]);
+    var oppTitle = opps[opp][5];
+    // console.log(oppTitle);
+    var oppUrl = "/opportunities/"+opp;
+    // console.log(oppUrl);
+    var marker = new google.maps.Marker({
+      position: {lat: oppLat, lng: oppLng},
+      map: map,
+      title: oppTitle,
+      url: oppUrl
+    });
+    // console.log(marker);
+    googleMarkers.push(marker);
+    google.maps.event.addListener(marker, 'click', function() {window.location.href = this.url;});
+    // console.log(googleMarkers.length);
+  }
+}
+
+function removeMarkers(){
+  for(i=0; i<googleMarkers.length; i++){
+    googleMarkers[i].setMap(null);
+  }
+}
+
+function displayResults(data){
+
+    var searchResult = document.getElementById("searchresults");
+
+    for (opp in data){
+        console.log(data[opp]);
+        var newA = document.createElement('a');
+        var newBr = document.createElement('br');
+        newA.setAttribute('href', "/opportunities/" + opp);
+        newA.innerHTML = data[opp][2];
+        searchResult.appendChild(newA);
+        searchResult.append(newBr);
+    }
+    putMarkers(data);
+}
+
+function getSearchResults(event){
+    event.preventDefault();
+    removeMarkers();
+    var searchResult = document.getElementById("searchresults");
+    searchResult.innerHTML = "";
+    // console.log("in getSearchResults");
+    var searchquery = $('#searchquery').val();
+    // console.log(searchquery);
+    $.get("/get-results", {searchquery: searchquery}, displayResults);
+}
+
+
+function getAllOpps(){
+  $.get('/format-data', putMarkers);
+}
+
+function getFilteredOpps(){
+  removeMarkers();
+  $.get('/filter-data', putMarkers);
+
+  // if (document.getElementById("filter").innerHTML == "Click to see available NOW") {
+  //   document.getElementById("filter").innerHTML = "Click to see all available";
+  //   removeMarkers();
+  //   $.get('/filter-data', putMarkers);
+  // }
+  // else {
+  //   document.getElementById("filter").innerHTML = "Click to see available NOW";
+  //   removeMarkers();
+  //   $.get('/format-data', putMarkers);
+  // }  
+}
+
+initMap();
+getAllOpps();
+
+// $("#filter").on("click", getFilteredOpps);
+$("#search-form").on("submit", getSearchResults);
+$("#now").change("checked", {now: now}, getFilteredOpps);
+
+</script>
+
+>>>>>>> a17675d08986650741dae0acefb50cdd9b27f0b2
 {% endblock %}

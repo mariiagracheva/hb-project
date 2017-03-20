@@ -81,6 +81,7 @@ def show_opp(vm_id):
 
     opp_location = OpportunityLocation.query.filter_by(opportunity_id=vm_id).one()
     location = Location.query.filter_by(location_id=opp_location.location_id).one()
+    print opp.img_url
 
     categories = []
     opp_cats = OpportunityCategory.query.filter_by(opportunity_id=vm_id).all()
@@ -129,7 +130,13 @@ def format_data():
         # 5 - title
         # 6 - tags
         # 7 - opp_time
+<<<<<<< HEAD
         data[opp] = [loc.lat, loc.lng, img, opp_data.descr, opp_data.categoryIds, opp_data.title, opp_data.tags, opp_data.opp_time]
+=======
+        # data[opp] = '%s,%s,%s,%s,%s,%s,%s,%s' %(loc.lat, loc.lng, opp_data.img_url, opp_data.descr, opp_data.categoryIds, opp_data.title, opp_data.tags, opp_data.opp_time)
+        data[opp] = [loc.lat, loc.lng, opp_data.img_url, opp_data.descr, opp_data.categoryIds, opp_data.title, opp_data.tags, opp_data.opp_time]
+        # print data[opp]
+>>>>>>> a17675d08986650741dae0acefb50cdd9b27f0b2
 
     # print type(data.keys())
 
@@ -141,6 +148,7 @@ def return_filtered_format_data():
 
     data = {}
 
+<<<<<<< HEAD
     opportunity_location = OpportunityLocation.query.all()
     # print datetime.datetime.now(tz=pytz.timezone('US/Pacific'))
     for opp_loc in opportunity_location:
@@ -151,11 +159,68 @@ def return_filtered_format_data():
             loc = Location.query.filter_by(location_id=opp_loc.location_id).one()
 
             data[opp] = '%s,%s,%s,%s,%s,%s,%s,%s' %(loc.lat, loc.lng, opp_data.img_url, opp_data.descr, opp_data.categoryIds, opp_data.title, opp_data.tags, opp_data.opp_time)
+=======
+    
+
+>>>>>>> a17675d08986650741dae0acefb50cdd9b27f0b2
     # print type(data.keys())
     return jsonify(data)
 
 
+@app.route("/get-results")
+def return_search_results():
+    data = {}
+    
+    searchquery = str(request.args.get('searchquery'))
+    now = str(request.args.get('now'))
 
+    if searchquery and now:
+        found_opps = Opportunity.query.filter(Opportunity.descr.like("%"+searchquery+"%")).limit(100).all()
+        for opp in found_opps:
+            try:
+                time = if_available_now(opp.opp_time)
+                if time == unicode("now!"):
+                    opp_loc = OpportunityLocation.query.filter_by(opportunity_id=opp.vm_id).one()
+                    loc = Location.query.filter_by(location_id=opp_loc.location_id).one()
+                    data[opp] = [loc.lat, loc.lng, opp_data.img_url, opp_data.descr, opp_data.categoryIds, opp_data.title, opp_data.tags, opp_data.opp_time]
+            except:
+                pass
+
+
+
+
+    if searchquery and not now:
+        found_opps = Opportunity.query.filter(Opportunity.descr.like("%"+searchquery+"%")).limit(100).all()
+        for opp in found_opps:
+            opp_loc = OpportunityLocation.query.filter_by(opportunity_id=opp.vm_id).one()
+            loc = Location.query.filter_by(location_id=opp_loc.location_id).one()
+            data[opp.vm_id] = [loc.lat, loc.lng, opp.title]
+
+
+
+
+    if not searchquery and now:
+        opportunity_location = OpportunityLocation.query.all()
+
+        for opp_loc in opportunity_location:
+            opp_time = Opportunity.query.filter_by(vm_id=opp_loc.opportunity_id).one().opp_time
+            try:
+                time = if_available_now(opp_time)
+                if time == unicode("now!"):
+                    opp = opp_loc.opportunity_id
+                    opp_data = Opportunity.query.filter_by(vm_id=opp).one()
+                    loc = Location.query.filter_by(location_id=opp_loc.location_id).one()
+                    # data[opp] = '%s,%s,%s,%s,%s,%s,%s,%s' %(loc.lat, loc.lng, opp_data.img_url, opp_data.descr, opp_data.categoryIds, opp_data.title, opp_data.tags, opp_data.opp_time)
+                    data[opp] = [loc.lat, loc.lng, opp_data.img_url, opp_data.descr, opp_data.categoryIds, opp_data.title, opp_data.tags, opp_data.opp_time]
+            except:
+                pass
+
+
+
+
+
+
+    return jsonify(data)
 
 
 @app.route("/search")
@@ -163,6 +228,7 @@ def search():
     return render_template("search.html")
 
 
+<<<<<<< HEAD
 @app.route("/get-results")
 def return_search_results():
     data = {}
@@ -175,8 +241,9 @@ def return_search_results():
         opp_loc = OpportunityLocation.query.filter_by(opportunity_id=opp.vm_id).one()
         loc = Location.query.filter_by(location_id=opp_loc.location_id).one()
         data[opp.vm_id] = [loc.lat, loc.lng, opp.img_url, opp.descr, opp.categoryIds, opp.title, opp.tags, opp.opp_time]
+=======
+>>>>>>> a17675d08986650741dae0acefb50cdd9b27f0b2
 
-    return jsonify(data)
 
 # @app.route("/tag/<vm_id>")
 # def return_tag_search():

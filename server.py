@@ -7,7 +7,7 @@ from sqlalchemy.orm.exc import NoResultFound, MultipleResultsFound
 from model import connect_to_db, db, Place, Location, Opportunity, Category, PlaceCategory, OpportunityCategory, PlaceLocation, OpportunityLocation
 import json
 
-from if_available_now import if_available_now
+# from if_available_now import if_available_now
 import datetime
 import pytz
 import urllib
@@ -37,7 +37,7 @@ def my_location():
 
 
 
-@app.route("/places")
+@app.route('/places')
 def places_list():
     """Show all places"""
 
@@ -86,7 +86,7 @@ def show_opp(vm_id):
     opp_cats = OpportunityCategory.query.filter_by(opportunity_id=vm_id).all()
     for cat in opp_cats:
         cat_name = Category.query.filter_by(vm_id=cat.category_id).one().category_name
-        print type(cat_name)
+        # print type(cat_name)
         categories.append(str(cat_name))
 
 
@@ -142,7 +142,7 @@ def return_filtered_format_data():
     data = {}
 
     opportunity_location = OpportunityLocation.query.all()
-    print datetime.datetime.now(tz=pytz.timezone('US/Pacific'))
+    # print datetime.datetime.now(tz=pytz.timezone('US/Pacific'))
     for opp_loc in opportunity_location:
         time = Opportunity.query.filter_by(vm_id=opp_loc.opportunity_id).one
         if time == "now!":
@@ -168,7 +168,7 @@ def return_search_results():
     data = {}
     # print "!!!!!!!!!!"
     searchquery = str(request.args.get('searchquery'))
-    print searchquery
+    # print searchquery
     # found_opps = Opportunity.query.limit(10).all()
     found_opps = Opportunity.query.filter(Opportunity.descr.like("%"+searchquery+"%")).all()
     for opp in found_opps:

@@ -97,7 +97,7 @@ def load_opportunities_and_locations():
         
         # extract opportunity id
         vm_id = infile.split('.')[0]
-        print vm_id
+        # print vm_id
         # some opportunitites were manually deleted
         try:
             data = json.loads(open(dir+'/'+infile).read())
@@ -182,7 +182,7 @@ def load_categories():
                             category_name=category_name)
         db.session.add(category)
         db.session.commit()
-        print 'cdtegory committed'
+        print 'category committed'
 
 def load_place_category():
     """load association table PlaceCategory from organizations.json"""
@@ -245,7 +245,7 @@ def load_locations_for_places():
             place_location = PlaceLocation(place_id=place.vm_id,
                                            location_id=location.location_id)
             print 'place_location created'
-            print place_location
+            # print place_location
             db.session.add(place_location)
             db.session.commit()
             print 'place_location committed'
